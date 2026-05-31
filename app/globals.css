@@ -1,0 +1,98 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #0b0c0e;
+  color: #f3f4f6;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: #ff6f5e;
+  color: #fff;
+}
+
+/* ── Scrollbar bertema tropis ── */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #0b0c0e;
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(#ff6f5e, #f4c430);
+  border-radius: 8px;
+}
+
+@layer utilities {
+  /* Gradient sunset Bunaken */
+  .gradient-sunset {
+    background-image: linear-gradient(120deg, #ff6f5e 0%, #f4c430 50%, #14b8a6 100%);
+  }
+  .text-gradient {
+    background-image: linear-gradient(120deg, #ff6f5e 0%, #f4c430 55%, #14b8a6 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  /* Glass premium */
+  .glass {
+    background: rgba(255, 255, 255, 0.045);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  /* Garis emas tipis dekoratif */
+  .hairline {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(244, 196, 48, 0.5), transparent);
+  }
+  /* Efek shimmer untuk highlight */
+  .shimmer {
+    background: linear-gradient(
+      100deg,
+      transparent 30%,
+      rgba(244, 196, 48, 0.15) 50%,
+      transparent 70%
+    );
+    background-size: 200% 100%;
+  }
+}
+
+/* ── Scroll reveal (dipakai komponen ScrollReveal) ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Hormati preferensi gerak minimal */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
