@@ -1,11 +1,11 @@
 import Link from "next/link";
-import { ArrowRight, MessageCircle, MapPin, Sparkles } from "lucide-react";
+import { ArrowRight, MessageCircle, MapPin, Star } from "lucide-react";
+import Logo from "@/components/Logo";
 import { getCars, getTestimonials } from "@/lib/cars";
 import CarCard from "@/components/CarCard";
 import Counter from "@/components/Counter";
 import TestimonialGallery from "@/components/TestimonialGallery";
 import ScrollReveal from "@/components/ScrollReveal";
-import WaveDivider from "@/components/WaveDivider";
 import TrustStrip from "@/components/TrustStrip";
 import Faq from "@/components/Faq";
 import { faqs } from "@/lib/faqs";
@@ -40,155 +40,240 @@ export default async function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
 
-      {/* ═══ HERO SINEMATIK ═══ */}
-      <section className="relative -mt-[68px] min-h-[92vh] overflow-hidden">
-        {/* Foto background + kenburns */}
-        <div className="absolute inset-0 -z-20">
-          <img
-            src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=2000&q=80"
-            alt="Mobil mewah rental Manado"
-            className="h-full w-full animate-kenburns object-cover"
-          />
-        </div>
-        {/* Overlay gelap + sunset glow */}
-        <div className="absolute inset-0 -z-10 bg-gradient-to-b from-ink/70 via-ink/80 to-ink" />
-        <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_30%_20%,_rgba(255,111,94,0.25),_transparent_55%)]" />
-        <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_80%_60%,_rgba(20,184,166,0.18),_transparent_55%)]" />
+      {/* ═══ HERO ═══ */}
+      <section className="relative overflow-hidden bg-white dark:bg-gray-900">
+        {/* Background glow — dark mode only */}
+        <div className="pointer-events-none absolute inset-0 -z-10 dark:bg-[radial-gradient(ellipse_80%_50%_at_50%_-10%,rgba(20,184,166,0.15),transparent)]" />
 
-        <div className="mx-auto flex max-w-7xl flex-col justify-center px-4 pb-24 pt-36 md:min-h-[92vh]">
-          <ScrollReveal>
-            <span className="inline-flex items-center gap-2 rounded-full border border-emas/30 bg-emas/10 px-4 py-1.5 text-sm font-medium text-emas">
-              <MapPin className="h-3.5 w-3.5" /> #1 Marketplace Mobil di Sulawesi Utara
-            </span>
-          </ScrollReveal>
+        <div className="mx-auto max-w-7xl px-4 py-16 pb-20">
+          <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
+            {/* ── Kiri: Teks ── */}
+            <div>
+              <ScrollReveal>
+                <span className="inline-flex items-center gap-2 rounded-full border border-teal/30 bg-teal/10 px-4 py-1.5 text-sm font-medium text-teal">
+                  <MapPin className="h-3.5 w-3.5" /> #1 Marketplace Mobil di
+                  Sulawesi Utara
+                </span>
+              </ScrollReveal>
 
-          <ScrollReveal delay={80}>
-            <h1 className="mt-6 max-w-3xl font-display text-5xl font-extrabold leading-[1.05] md:text-7xl">
-              Sewa &amp; Beli Mobil di{" "}
-              <span className="text-gradient">Surga Sulawesi</span>
-            </h1>
-          </ScrollReveal>
+              <ScrollReveal delay={80}>
+                <h1 className="mt-5 text-4xl font-bold leading-[1.15] text-gray-900 dark:text-white sm:text-5xl md:text-6xl">
+                  Rental &amp; Beli
+                  <br />
+                  Mobil di <span className="text-teal">Manado</span>
+                </h1>
+              </ScrollReveal>
 
-          <ScrollReveal delay={160}>
-            <p className="mt-6 max-w-xl text-lg text-gray-300">
-              Jelajahi keindahan Manado, Tomohon, hingga Likupang dengan mobil
-              pilihan terbaik. Proses mudah, harga transparan, langsung lewat
-              WhatsApp.
-            </p>
-          </ScrollReveal>
+              <ScrollReveal delay={160}>
+                <p className="mt-5 text-base leading-relaxed text-gray-500 dark:text-gray-400 sm:text-lg">
+                  Jelajahi keindahan Manado, Tomohon, hingga Likupang dengan
+                  mobil pilihan terbaik. Proses mudah, harga transparan,
+                  langsung lewat WhatsApp.
+                </p>
+              </ScrollReveal>
 
-          <ScrollReveal delay={240}>
-            <div className="mt-9 flex flex-wrap gap-4">
-              <Link
-                href="/katalog"
-                className="group flex items-center gap-2 rounded-full gradient-sunset px-7 py-3.5 font-semibold text-ink transition hover:opacity-90"
-              >
-                Jelajahi Armada
-                <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
-              </Link>
-              <a
-                href={waLink("Halo AutoManado, saya ingin menyewa/membeli mobil di Manado.")}
-                target="_blank"
-                className="flex items-center gap-2 rounded-full glass px-7 py-3.5 font-semibold text-white transition hover:border-emas/40"
-              >
-                <MessageCircle className="h-4 w-4 text-teal" /> Hubungi WhatsApp
-              </a>
+              <ScrollReveal delay={240}>
+                <div className="mt-8 flex flex-wrap gap-3">
+                  <Link
+                    href="/katalog"
+                    className="group inline-flex items-center gap-2 rounded-full bg-teal px-7 py-3.5 font-semibold text-white shadow-sm transition hover:bg-teal/90 hover:shadow-md"
+                  >
+                    Jelajahi Armada
+                    <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
+                  </Link>
+                  <a
+                    href={waLink(
+                      "Halo AutoManado, saya ingin menyewa/membeli mobil di Manado.",
+                    )}
+                    target="_blank"
+                    className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-7 py-3.5 font-semibold text-gray-700 transition hover:border-gray-300 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-750"
+                  >
+                    <MessageCircle className="h-4 w-4 text-teal" /> Hubungi
+                    WhatsApp
+                  </a>
+                </div>
+              </ScrollReveal>
+
+              {/* Stats inline */}
+              <ScrollReveal delay={320}>
+                <div className="mt-10 grid grid-cols-4 gap-2 border-t border-gray-100 pt-8 dark:border-gray-800">
+                  {[
+                    {
+                      value:
+                        allCars.filter((c) => c.status === "tersedia").length ||
+                        50,
+                      suffix: "+",
+                      label: "Mobil",
+                    },
+                    { value: 1200, suffix: "+", label: "Klien Puas" },
+                    { value: 8, suffix: " Thn", label: "Pengalaman" },
+                    { value: 25, suffix: "+", label: "Mitra" },
+                  ].map((s) => (
+                    <div key={s.label}>
+                      <Counter
+                        to={s.value}
+                        suffix={s.suffix}
+                        label={s.label}
+                        size="sm"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </ScrollReveal>
             </div>
-          </ScrollReveal>
 
-          {/* Stats inline */}
-          <ScrollReveal delay={320}>
-            <div className="mt-14 grid max-w-2xl grid-cols-2 gap-6 sm:grid-cols-4">
-              <Counter to={allCars.filter((c) => c.status === "tersedia").length || 50} suffix="+" label="Mobil Tersedia" />
-              <Counter to={1200} suffix="+" label="Klien Puas" />
-              <Counter to={8} suffix=" Thn" label="Pengalaman" />
-              <Counter to={25} suffix="+" label="Mitra" />
-            </div>
-          </ScrollReveal>
+            {/* ── Kanan: Gambar + floating card ── */}
+            <ScrollReveal delay={120} className="hidden lg:block">
+              <div className="relative">
+                {/* Gambar utama */}
+                <div className="aspect-[4/3] overflow-hidden rounded-3xl shadow-xl">
+                  <img
+                    src="https://images.unsplash.com/photo-1494976388531-d1058494cdd8?auto=format&fit=crop&w=900&q=80"
+                    alt="Mobil rental Manado"
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+
+                {/* Floating card kiri bawah */}
+                <div className="absolute -bottom-5 -left-5 flex items-center gap-3 rounded-2xl border border-gray-200 bg-white p-4 shadow-lg dark:border-gray-700 dark:bg-gray-800">
+                  <Logo size={28} />
+                  <div>
+                    <p className="text-sm font-bold text-gray-900 dark:text-white">
+                      {allCars.filter((c) => c.status === "tersedia").length ||
+                        50}
+                      + Armada
+                    </p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                      Siap disewa hari ini
+                    </p>
+                  </div>
+                </div>
+
+                {/* Floating card kanan atas */}
+                <div className="absolute -right-4 -top-4 flex items-center gap-2 rounded-2xl border border-gray-200 bg-white px-4 py-3 shadow-lg dark:border-gray-700 dark:bg-gray-800">
+                  <div className="flex gap-0.5">
+                    {[1, 2, 3, 4, 5].map((i) => (
+                      <Star
+                        key={i}
+                        className="h-3.5 w-3.5 fill-amber-400 text-amber-400"
+                      />
+                    ))}
+                  </div>
+                  <span className="text-sm font-semibold text-gray-900 dark:text-white">
+                    4.9
+                  </span>
+                  <span className="text-xs text-gray-500 dark:text-gray-400">
+                    · 1200+ klien
+                  </span>
+                </div>
+              </div>
+            </ScrollReveal>
+          </div>
         </div>
-
-        <WaveDivider className="absolute bottom-0 left-0 text-ink" />
       </section>
 
       {/* ═══ TRUST STRIP ═══ */}
-      <section className="mx-auto max-w-7xl px-4 py-12">
-        <ScrollReveal>
-          <TrustStrip />
-        </ScrollReveal>
+      <section className="bg-gray-50 py-12 dark:bg-gray-800/50">
+        <div className="mx-auto max-w-7xl px-4">
+          <ScrollReveal>
+            <TrustStrip />
+          </ScrollReveal>
+        </div>
       </section>
 
       {/* ═══ ARMADA UNGGULAN ═══ */}
-      <section className="mx-auto max-w-7xl px-4 py-10">
-        <ScrollReveal className="flex items-end justify-between">
-          <div>
-            <span className="flex items-center gap-2 text-sm font-medium text-coral">
-              <Sparkles className="h-4 w-4" /> Pilihan Terbaik
-            </span>
-            <h2 className="mt-2 font-display text-4xl font-extrabold">Armada Unggulan</h2>
-            <p className="mt-2 text-gray-400">Mobil paling diminati pelanggan kami.</p>
+      <section className="bg-white py-16 dark:bg-gray-900">
+        <div className="mx-auto max-w-7xl px-4">
+          <ScrollReveal className="flex items-end justify-between">
+            <div>
+              <span className="text-sm font-medium text-teal">
+                Pilihan Terbaik
+              </span>
+              <h2 className="mt-1 text-3xl font-bold text-gray-900 dark:text-white">
+                Armada Unggulan
+              </h2>
+              <p className="mt-1 text-gray-500 dark:text-gray-400">
+                Mobil paling diminati pelanggan kami.
+              </p>
+            </div>
+            <Link
+              href="/katalog"
+              className="hidden items-center gap-1 text-sm font-medium text-teal hover:underline sm:flex"
+            >
+              Lihat semua <ArrowRight className="h-4 w-4" />
+            </Link>
+          </ScrollReveal>
+
+          <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {showcase.map((car, i) => (
+              <ScrollReveal key={car.id} delay={i * 60}>
+                <CarCard car={car} />
+              </ScrollReveal>
+            ))}
           </div>
-          <Link href="/katalog" className="hidden items-center gap-1 text-emas hover:underline sm:flex">
-            Lihat semua <ArrowRight className="h-4 w-4" />
-          </Link>
-        </ScrollReveal>
+          {showcase.length === 0 && (
+            <p className="py-16 text-center text-gray-400">
+              Belum ada mobil. Tambahkan lewat panel admin.
+            </p>
+          )}
 
-        <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {showcase.map((car, i) => (
-            <ScrollReveal key={car.id} delay={i * 70}>
-              <CarCard car={car} />
-            </ScrollReveal>
-          ))}
-        </div>
-        {showcase.length === 0 && (
-          <p className="py-16 text-center text-gray-500">
-            Belum ada mobil. Tambahkan lewat panel admin.
-          </p>
-        )}
-
-        <div className="mt-8 text-center sm:hidden">
-          <Link href="/katalog" className="text-emas hover:underline">
-            Lihat semua armada →
-          </Link>
+          <div className="mt-8 text-center sm:hidden">
+            <Link
+              href="/katalog"
+              className="text-sm font-medium text-teal hover:underline"
+            >
+              Lihat semua armada →
+            </Link>
+          </div>
         </div>
       </section>
 
       {/* ═══ TESTIMONI ═══ */}
-      <ScrollReveal>
-        <TestimonialGallery testimonials={testimonials} />
-      </ScrollReveal>
-
-      {/* ═══ FAQ ═══ */}
-      <section className="mx-auto max-w-7xl px-4 py-16">
-        <ScrollReveal className="mb-10 text-center">
-          <span className="text-sm font-medium text-teal">Pertanyaan Umum</span>
-          <h2 className="mt-2 font-display text-4xl font-extrabold">Yang Sering Ditanyakan</h2>
-        </ScrollReveal>
+      <section className="bg-gray-50 py-4 dark:bg-gray-800/50">
         <ScrollReveal>
-          <Faq />
+          <TestimonialGallery testimonials={testimonials} />
         </ScrollReveal>
       </section>
 
-      {/* ═══ CTA ═══ */}
-      <section className="mx-auto max-w-7xl px-4 pb-20">
-        <ScrollReveal>
-          <div className="relative overflow-hidden rounded-3xl border border-emas/20 p-10 text-center md:p-16">
-            <div className="absolute inset-0 -z-10 gradient-sunset opacity-10" />
-            <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_center,_rgba(255,111,94,0.15),_transparent_70%)]" />
-            <h2 className="font-display text-4xl font-extrabold md:text-5xl">
-              Siap Menjelajah Manado?
+      {/* ═══ FAQ ═══ */}
+      <section className="bg-white py-16 dark:bg-gray-900">
+        <div className="mx-auto max-w-7xl px-4">
+          <ScrollReveal className="mb-10 text-center">
+            <span className="text-sm font-medium text-teal">
+              Pertanyaan Umum
+            </span>
+            <h2 className="mt-1 text-3xl font-bold text-gray-900 dark:text-white">
+              Yang Sering Ditanyakan
             </h2>
-            <p className="mx-auto mt-4 max-w-lg text-gray-300">
-              Pesan mobil impian Anda sekarang. Tim kami siap membantu, respon cepat 24/7.
-            </p>
-            <a
-              href={waLink("Halo AutoManado, saya ingin memesan mobil.")}
-              target="_blank"
-              className="mt-8 inline-flex items-center gap-2 rounded-full gradient-sunset px-8 py-4 font-semibold text-ink transition hover:opacity-90"
-            >
-              <MessageCircle className="h-5 w-5" /> Pesan via WhatsApp
-            </a>
-          </div>
-        </ScrollReveal>
+          </ScrollReveal>
+          <ScrollReveal>
+            <Faq />
+          </ScrollReveal>
+        </div>
+      </section>
+
+      {/* ═══ CTA ═══ */}
+      <section className="bg-gray-50 py-16 dark:bg-gray-800/50">
+        <div className="mx-auto max-w-7xl px-4">
+          <ScrollReveal>
+            <div className="rounded-2xl border border-gray-200 bg-white p-10 text-center shadow-sm dark:border-gray-700 dark:bg-gray-900 md:p-16">
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-white md:text-4xl">
+                Siap Menjelajah Manado?
+              </h2>
+              <p className="mx-auto mt-4 max-w-lg text-gray-500 dark:text-gray-400">
+                Pesan mobil impian Anda sekarang. Tim kami siap membantu, respon
+                cepat 24/7.
+              </p>
+              <a
+                href={waLink("Halo AutoManado, saya ingin memesan mobil.")}
+                target="_blank"
+                className="mt-8 inline-flex items-center gap-2 rounded-full bg-teal px-8 py-4 font-semibold text-white transition hover:bg-teal/90"
+              >
+                <MessageCircle className="h-5 w-5" /> Pesan via WhatsApp
+              </a>
+            </div>
+          </ScrollReveal>
+        </div>
       </section>
     </>
   );

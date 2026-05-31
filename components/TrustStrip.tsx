@@ -15,14 +15,14 @@ export default function TrustStrip({ compact = false }: { compact?: boolean }) {
       {items.map((it) => (
         <div
           key={it.title}
-          className="glass flex items-center gap-3 rounded-xl p-3.5"
+          className="flex items-center gap-3 rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800"
         >
-          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-emas/10">
-            <it.icon className="h-5 w-5 text-emas" />
+          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-teal/10">
+            <it.icon className="h-5 w-5 text-teal" />
           </span>
           <div className="min-w-0">
-            <p className="text-sm font-semibold leading-tight">{it.title}</p>
-            <p className="truncate text-xs text-gray-400">{it.desc}</p>
+            <p className="text-sm font-semibold leading-tight text-gray-900 dark:text-white">{it.title}</p>
+            <p className="truncate text-xs text-gray-500 dark:text-gray-400">{it.desc}</p>
           </div>
         </div>
       ))}

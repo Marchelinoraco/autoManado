@@ -18,6 +18,8 @@ type Props = {
   onCancel: () => void;
 };
 
+const inputClass = "mt-1 w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-gray-900 outline-none focus:border-teal focus:ring-1 focus:ring-teal/20";
+
 export default function CarForm({ initial, onSaved, onCancel }: Props) {
   const [form, setForm] = useState({
     name:          initial?.name          ?? "",
@@ -97,23 +99,23 @@ export default function CarForm({ initial, onSaved, onCancel }: Props) {
     extra?: React.InputHTMLAttributes<HTMLInputElement>
   ) => (
     <label className="block text-sm">
-      <span className="text-gray-400">{label}</span>
+      <span className="text-gray-600">{label}</span>
       <input
         {...extra}
         value={String(form[key as keyof typeof form])}
         onChange={(e) => set(key, e.target.value)}
-        className="mt-1 w-full rounded-lg border border-white/10 bg-ink px-3 py-2 outline-none focus:border-emas"
+        className={inputClass}
       />
     </label>
   );
 
   const select = (label: string, key: string, options: readonly string[]) => (
     <label className="block text-sm">
-      <span className="text-gray-400">{label}</span>
+      <span className="text-gray-600">{label}</span>
       <select
         value={String(form[key as keyof typeof form])}
         onChange={(e) => set(key, e.target.value)}
-        className="mt-1 w-full rounded-lg border border-white/10 bg-ink px-3 py-2 outline-none focus:border-emas"
+        className={inputClass}
       >
         {options.map((o) => (
           <option key={o} value={o}>{o || "— Tidak ada —"}</option>
@@ -155,15 +157,15 @@ export default function CarForm({ initial, onSaved, onCancel }: Props) {
       <div className="grid grid-cols-2 gap-4">
         {field("Plat Asal", "plat_asal", { placeholder: "DB / DM / B / dll" })}
         <label className="block text-sm">
-          <span className="text-gray-400">Dengan Sopir</span>
+          <span className="text-gray-600">Dengan Sopir</span>
           <div className="mt-1">
             <button
               type="button"
               onClick={() => set("dengan_sopir", !form.dengan_sopir)}
               className={`h-10 w-full rounded-lg border px-3 text-left text-sm font-medium transition ${
                 form.dengan_sopir
-                  ? "border-biru/60 bg-biru/10 text-biru"
-                  : "border-white/10 text-gray-400 hover:border-white/30"
+                  ? "border-teal/60 bg-teal/10 text-teal"
+                  : "border-gray-200 text-gray-500 hover:border-teal/30"
               }`}
             >
               {form.dengan_sopir ? "✓ Tersedia dengan sopir" : "Tidak tersedia sopir"}
@@ -173,23 +175,23 @@ export default function CarForm({ initial, onSaved, onCancel }: Props) {
       </div>
 
       <label className="block text-sm">
-        <span className="text-gray-400">Kelengkapan Dokumen</span>
+        <span className="text-gray-600">Kelengkapan Dokumen</span>
         <input
           value={form.kelengkapan}
           onChange={(e) => set("kelengkapan", e.target.value)}
           placeholder="Contoh: STNK Ada, BPKB Ada, Ban Serep, Dongkrak"
-          className="mt-1 w-full rounded-lg border border-white/10 bg-ink px-3 py-2 outline-none focus:border-emas"
+          className={inputClass}
         />
       </label>
 
       <label className="block text-sm">
-        <span className="text-gray-400">Deskripsi</span>
+        <span className="text-gray-600">Deskripsi</span>
         <textarea
           value={form.description}
           onChange={(e) => set("description", e.target.value)}
           rows={3}
           placeholder="Ceritakan keunggulan dan kondisi mobil..."
-          className="mt-1 w-full rounded-lg border border-white/10 bg-ink px-3 py-2 outline-none focus:border-emas"
+          className={inputClass}
         />
       </label>
 
@@ -197,11 +199,11 @@ export default function CarForm({ initial, onSaved, onCancel }: Props) {
       <div>
         <label className="block text-sm">
           <div className="flex items-center justify-between">
-            <span className="flex items-center gap-2 text-gray-400">
+            <span className="flex items-center gap-2 text-gray-600">
               <Images className="h-4 w-4" />
               URL Foto (1 URL per baris, urutan: Depan · Samping · Belakang · Interior · Dashboard)
             </span>
-            <span className={`text-xs font-semibold ${imageList.length >= 5 ? "text-green-400" : "text-yellow-400"}`}>
+            <span className={`text-xs font-semibold ${imageList.length >= 5 ? "text-green-600" : "text-amber-500"}`}>
               {imageList.length}/5 foto
             </span>
           </div>
@@ -216,12 +218,12 @@ export default function CarForm({ initial, onSaved, onCancel }: Props) {
               "https://link-foto-4.jpg  ← Interior\n" +
               "https://link-foto-5.jpg  ← Dashboard"
             }
-            className="mt-1 w-full rounded-lg border border-white/10 bg-ink px-3 py-2 font-mono text-xs outline-none focus:border-emas"
+            className={`${inputClass} font-mono text-xs`}
           />
         </label>
 
         {photoWarning && (
-          <p className="mt-1.5 flex items-center gap-1.5 rounded-lg bg-yellow-500/10 px-3 py-2 text-xs text-yellow-400">
+          <p className="mt-1.5 flex items-center gap-1.5 rounded-lg bg-amber-50 border border-amber-200 px-3 py-2 text-xs text-amber-600">
             <AlertTriangle className="h-3.5 w-3.5 shrink-0" />
             Standar AutoManado: 5 foto (Depan, Samping, Belakang, Interior, Dashboard).
             Saat ini baru {imageList.length} foto.
@@ -230,21 +232,21 @@ export default function CarForm({ initial, onSaved, onCancel }: Props) {
       </div>
 
       {error && (
-        <p className="rounded-lg bg-red-500/20 px-4 py-2 text-sm text-red-400">{error}</p>
+        <p className="rounded-lg bg-red-50 border border-red-200 px-4 py-2 text-sm text-red-600">{error}</p>
       )}
 
       <div className="flex gap-3 pt-2">
         <button
           type="submit"
           disabled={loading}
-          className="flex-1 rounded-xl bg-merah py-2.5 font-semibold text-white transition hover:bg-merah/90 disabled:opacity-60"
+          className="flex-1 rounded-xl bg-teal py-2.5 font-semibold text-white transition hover:bg-teal/90 disabled:opacity-60"
         >
           {loading ? "Menyimpan…" : initial ? "Simpan Perubahan" : "Tambah Mobil"}
         </button>
         <button
           type="button"
           onClick={onCancel}
-          className="flex-1 rounded-xl border border-white/10 py-2.5 text-gray-300 hover:text-white"
+          className="flex-1 rounded-xl border border-gray-200 py-2.5 text-gray-600 hover:text-gray-900"
         >
           Batal
         </button>

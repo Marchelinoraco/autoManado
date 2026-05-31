@@ -76,43 +76,42 @@ export default function KatalogClient({ cars }: { cars: Car[] }) {
 
   const pill = (active: boolean) =>
     `rounded-full px-4 py-2 text-sm font-medium transition ${
-      active ? "gradient-sunset text-ink" : "border border-white/10 text-gray-300 hover:border-emas/40"
+      active
+        ? "bg-teal text-white"
+        : "border border-gray-200 bg-white text-gray-600 hover:border-teal/40 hover:text-teal dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:border-teal/40 dark:hover:text-teal"
     }`;
 
   return (
     <div className="mt-8">
-      {/* Search + sort + toggle filter */}
+      {/* Search + sort + filter */}
       <div className="flex flex-wrap items-center gap-3">
         <div className="relative min-w-[200px] flex-1">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Cari nama mobil..."
-            className="w-full rounded-full border border-white/10 bg-white/5 py-2.5 pl-10 pr-4 outline-none focus:border-emas"
+            className="w-full rounded-full border border-gray-200 bg-white py-2.5 pl-10 pr-4 text-gray-900 outline-none focus:border-teal focus:ring-1 focus:ring-teal/30 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:placeholder-gray-500"
           />
         </div>
 
         <div className="relative">
-          <ArrowDownUp className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
+          <ArrowDownUp className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
           <select
             value={sort}
             onChange={(e) => setSort(e.target.value)}
-            className="appearance-none rounded-full border border-white/10 bg-white/5 py-2.5 pl-10 pr-8 text-sm outline-none focus:border-emas"
+            className="appearance-none rounded-full border border-gray-200 bg-white py-2.5 pl-10 pr-8 text-sm text-gray-700 outline-none focus:border-teal dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300"
           >
             {sortOptions.map((o) => <option key={o.key} value={o.key}>{o.label}</option>)}
           </select>
         </div>
 
-        <button
-          onClick={() => setShowFilters((v) => !v)}
-          className={pill(showFilters)}
-        >
+        <button onClick={() => setShowFilters((v) => !v)} className={pill(showFilters)}>
           <span className="flex items-center gap-2"><SlidersHorizontal className="h-4 w-4" /> Filter</span>
         </button>
       </div>
 
-      {/* Kategori chips (selalu tampil) */}
+      {/* Kategori chips */}
       <div className="mt-4 flex flex-wrap gap-2">
         {categoryFilters.map((f) => (
           <button key={f.key} onClick={() => setCategory(f.key)} className={pill(category === f.key)}>
@@ -123,9 +122,9 @@ export default function KatalogClient({ cars }: { cars: Car[] }) {
 
       {/* Panel filter lanjutan */}
       {showFilters && (
-        <div className="mt-4 grid gap-5 rounded-2xl border border-white/10 bg-white/[0.03] p-5 md:grid-cols-2">
+        <div className="mt-4 grid gap-5 rounded-2xl border border-gray-200 bg-gray-50 p-5 dark:border-gray-700 dark:bg-gray-800/50 md:grid-cols-2">
           <div>
-            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">Tipe Mobil</p>
+            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">Tipe Mobil</p>
             <div className="flex flex-wrap gap-2">
               {typeFilters.map((t) => (
                 <button key={t} onClick={() => setType(type === t ? null : t)} className={pill(type === t)}>{t}</button>
@@ -134,13 +133,13 @@ export default function KatalogClient({ cars }: { cars: Car[] }) {
           </div>
 
           <div>
-            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">Transmisi</p>
+            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">Transmisi</p>
             <div className="flex flex-wrap gap-2">
               {transmissions.map((t) => (
                 <button key={t} onClick={() => setTransmission(transmission === t ? null : t)} className={pill(transmission === t)}>{t}</button>
               ))}
             </div>
-            <p className="mb-2 mt-4 text-xs font-semibold uppercase tracking-wide text-gray-500">Bahan Bakar</p>
+            <p className="mb-2 mt-4 text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">Bahan Bakar</p>
             <div className="flex flex-wrap gap-2">
               {fuels.map((f) => (
                 <button key={f} onClick={() => setFuel(fuel === f ? null : f)} className={pill(fuel === f)}>{f}</button>
@@ -148,13 +147,10 @@ export default function KatalogClient({ cars }: { cars: Car[] }) {
             </div>
           </div>
 
-          {/* Slider harga */}
           <div className="md:col-span-2">
             <div className="mb-2 flex items-center justify-between">
-              <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Maks. Harga Sewa / hari</p>
-              <span className="text-sm font-semibold text-emas">
-                Rp {maxPrice.toLocaleString("id-ID")}
-              </span>
+              <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">Maks. Harga Sewa / hari</p>
+              <span className="text-sm font-semibold text-teal">Rp {maxPrice.toLocaleString("id-ID")}</span>
             </div>
             <input
               type="range"
@@ -163,7 +159,7 @@ export default function KatalogClient({ cars }: { cars: Car[] }) {
               step={50000}
               value={maxPrice}
               onChange={(e) => setMaxPrice(Number(e.target.value))}
-              className="w-full accent-coral"
+              className="w-full accent-teal"
             />
           </div>
         </div>
@@ -172,34 +168,33 @@ export default function KatalogClient({ cars }: { cars: Car[] }) {
       {/* Chip filter aktif */}
       {activeChips.length > 0 && (
         <div className="mt-4 flex flex-wrap items-center gap-2">
-          <span className="text-xs text-gray-500">Filter aktif:</span>
+          <span className="text-xs text-gray-500 dark:text-gray-400">Filter aktif:</span>
           {activeChips.map((chip, i) => (
             <button
               key={i}
               onClick={chip.clear}
-              className="flex items-center gap-1 rounded-full bg-emas/10 px-3 py-1 text-xs text-emas hover:bg-emas/20"
+              className="flex items-center gap-1 rounded-full bg-teal/10 px-3 py-1 text-xs text-teal hover:bg-teal/20"
             >
               {chip.label} <X className="h-3 w-3" />
             </button>
           ))}
-          <button onClick={resetAll} className="text-xs text-merah hover:underline">Reset semua</button>
+          <button onClick={resetAll} className="text-xs text-red-500 hover:underline">Reset semua</button>
         </div>
       )}
 
-      {/* Hasil */}
-      <p className="mt-6 text-sm text-gray-500">
-        Menampilkan <span className="font-semibold text-white">{result.length}</span> mobil
+      <p className="mt-6 text-sm text-gray-500 dark:text-gray-400">
+        Menampilkan <span className="font-semibold text-gray-900 dark:text-white">{result.length}</span> mobil
       </p>
 
       {result.length === 0 ? (
-        <div className="mt-12 rounded-2xl border border-dashed border-white/10 py-16 text-center">
+        <div className="mt-12 rounded-2xl border border-dashed border-gray-300 py-16 text-center dark:border-gray-700">
           <p className="text-gray-400">Tidak ada mobil yang cocok dengan filter Anda.</p>
-          <button onClick={resetAll} className="mt-4 rounded-full gradient-sunset px-5 py-2 text-sm font-semibold text-ink">
+          <button onClick={resetAll} className="mt-4 rounded-full bg-teal px-5 py-2 text-sm font-semibold text-white hover:bg-teal/90">
             Reset filter
           </button>
         </div>
       ) : (
-        <div className="mt-4 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {result.map((car, i) => (
             <ScrollReveal key={car.id} delay={Math.min(i, 6) * 50}>
               <CarCard car={car} />

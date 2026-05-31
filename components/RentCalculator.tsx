@@ -39,7 +39,7 @@ export default function RentCalculator({ car }: { car: Car }) {
   }, [rate, totalDays, discount, startDate]);
 
   const message =
-`🚗 *BOOKING RENTAL — MANARENT*
+`🚗 *BOOKING RENTAL — AUTOMANADO*
 
 👤 Nama       : ${name || "-"}
 🚙 Mobil      : ${car.name} (${car.year})
@@ -53,10 +53,12 @@ ${car.plat_asal ? `🔢 Plat        : ${car.plat_asal}\n` : ""}${car.kondisi ? `
 
 Mohon konfirmasi ketersediaan & harga final. Terima kasih! 🙏`;
 
+  const inputClass = "mt-1 w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-gray-900 outline-none focus:border-teal focus:ring-1 focus:ring-teal/20 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:placeholder-gray-500";
+
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
-      <h3 className="flex items-center gap-2 text-lg font-bold">
-        <CalendarDays className="h-5 w-5 text-emas" /> Kalkulator Sewa
+    <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+      <h3 className="flex items-center gap-2 text-lg font-bold text-gray-900 dark:text-white">
+        <CalendarDays className="h-5 w-5 text-teal" /> Kalkulator Sewa
       </h3>
 
       {/* Pilih durasi */}
@@ -67,13 +69,13 @@ Mohon konfirmasi ketersediaan & harga final. Terima kasih! 🙏`;
             onClick={() => setMode(m)}
             className={`rounded-lg border px-2 py-2 text-xs font-semibold capitalize transition ${
               mode === m
-                ? "border-emas bg-emas text-ink"
-                : "border-white/10 text-gray-300 hover:border-emas/50"
+                ? "border-teal bg-teal text-white"
+                : "border-gray-200 text-gray-600 hover:border-teal/50 dark:border-gray-700 dark:text-gray-300"
             }`}
           >
             {m}
             {m !== "hari" && (
-              <span className={`ml-1 text-[10px] ${mode === m ? "text-ink/70" : "text-green-400"}`}>
+              <span className={`ml-1 text-[10px] ${mode === m ? "text-white/80" : "text-green-600 dark:text-green-400"}`}>
                 {m === "minggu" ? "-10%" : "-20%"}
               </span>
             )}
@@ -83,28 +85,28 @@ Mohon konfirmasi ketersediaan & harga final. Terima kasih! 🙏`;
 
       <div className="mt-4 space-y-3">
         <label className="block text-sm">
-          <span className="text-gray-400">Nama Anda *</span>
+          <span className="text-gray-500 dark:text-gray-400">Nama Anda *</span>
           <input
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Masukkan nama Anda"
-            className="mt-1 w-full rounded-lg border border-white/10 bg-ink px-3 py-2 outline-none focus:border-emas"
+            className={inputClass}
           />
         </label>
 
         <div className="grid grid-cols-2 gap-3">
           <label className="block text-sm">
-            <span className="text-gray-400">Tanggal Mulai</span>
+            <span className="text-gray-500 dark:text-gray-400">Tanggal Mulai</span>
             <input
               type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
               min={new Date().toISOString().slice(0, 10)}
-              className="mt-1 w-full rounded-lg border border-white/10 bg-ink px-3 py-2 outline-none focus:border-emas"
+              className={inputClass}
             />
           </label>
           <label className="block text-sm">
-            <span className="text-gray-400">
+            <span className="text-gray-500 dark:text-gray-400">
               Jumlah {mode === "hari" ? "hari" : mode === "minggu" ? "minggu" : "bulan"}
             </span>
             <input
@@ -113,20 +115,19 @@ Mohon konfirmasi ketersediaan & harga final. Terima kasih! 🙏`;
               max={90}
               value={qty}
               onChange={(e) => setQty(Math.max(1, Number(e.target.value)))}
-              className="mt-1 w-full rounded-lg border border-white/10 bg-ink px-3 py-2 outline-none focus:border-emas"
+              className={inputClass}
             />
           </label>
         </div>
 
-        {/* Sopir toggle */}
         {car.dengan_sopir && (
           <button
             type="button"
             onClick={() => setWithDriver((v) => !v)}
             className={`flex w-full items-center gap-3 rounded-lg border px-3 py-2.5 text-sm transition ${
               withDriver
-                ? "border-emas/60 bg-emas/10 text-emas"
-                : "border-white/10 text-gray-300 hover:border-emas/30"
+                ? "border-teal/60 bg-teal/10 text-teal"
+                : "border-gray-200 text-gray-600 hover:border-teal/30 dark:border-gray-700 dark:text-gray-300"
             }`}
           >
             <UserCheck className="h-4 w-4 shrink-0" />
@@ -135,42 +136,40 @@ Mohon konfirmasi ketersediaan & harga final. Terima kasih! 🙏`;
         )}
 
         <label className="block text-sm">
-          <span className="text-gray-400">Catatan (lokasi antar, permintaan, dll.)</span>
+          <span className="text-gray-500 dark:text-gray-400">Catatan (lokasi antar, permintaan, dll.)</span>
           <textarea
             value={note}
             onChange={(e) => setNote(e.target.value)}
             rows={2}
             placeholder="Misal: antar ke Bandara Sam Ratulangi pukul 08.00"
-            className="mt-1 w-full rounded-lg border border-white/10 bg-ink px-3 py-2 outline-none focus:border-emas"
+            className={inputClass}
           />
         </label>
       </div>
 
       {/* Ringkasan harga */}
-      <div className="mt-4 space-y-1.5 rounded-xl bg-black/30 p-4 text-sm">
-        <div className="flex justify-between text-gray-400">
+      <div className="mt-4 space-y-1.5 rounded-xl bg-gray-50 p-4 text-sm dark:bg-gray-900/50">
+        <div className="flex justify-between text-gray-500 dark:text-gray-400">
           <span>{formatRupiah(rate)} × {totalDays} hari</span>
           <span>{formatRupiah(subtotal)}</span>
         </div>
         {potongan > 0 && (
-          <div className="flex justify-between text-green-400">
+          <div className="flex justify-between text-green-600 dark:text-green-400">
             <span>Diskon {Math.round(discount * 100)}% ({config[mode].label.split(" ")[1]})</span>
             <span>− {formatRupiah(potongan)}</span>
           </div>
         )}
-        <div className="flex justify-between border-t border-white/10 pt-2 text-base font-bold">
+        <div className="flex justify-between border-t border-gray-200 pt-2 text-base font-bold text-gray-900 dark:border-gray-700 dark:text-white">
           <span>Estimasi Total</span>
-          <span className="text-emas">{formatRupiah(total)}</span>
+          <span className="text-teal">{formatRupiah(total)}</span>
         </div>
-        <p className="pt-1 text-[11px] text-gray-500">
-          * Harga final dikonfirmasi via WhatsApp
-        </p>
+        <p className="pt-1 text-[11px] text-gray-400">* Harga final dikonfirmasi via WhatsApp</p>
       </div>
 
       <a
         href={waLink(message)}
         target="_blank"
-        className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-[#25D366] px-4 py-3 font-semibold text-white shadow-lg shadow-[#25D366]/20 transition hover:opacity-90"
+        className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-[#25D366] px-4 py-3 font-semibold text-white transition hover:opacity-90"
       >
         <MessageCircle className="h-5 w-5" /> Booking via WhatsApp
       </a>

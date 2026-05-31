@@ -12,15 +12,15 @@ export default function BandingPage() {
   if (items.length === 0) {
     return (
       <section className="mx-auto max-w-7xl px-4 py-24 text-center">
-        <GitCompareArrows className="mx-auto h-14 w-14 text-gray-600" />
-        <h1 className="mt-6 font-display text-3xl font-extrabold">Belum Ada Mobil Dibandingkan</h1>
-        <p className="mt-3 text-gray-400">
+        <GitCompareArrows className="mx-auto h-12 w-12 text-gray-300 dark:text-gray-600" />
+        <h1 className="mt-6 text-3xl font-bold text-gray-900 dark:text-white">Belum Ada Mobil Dibandingkan</h1>
+        <p className="mt-3 text-gray-500 dark:text-gray-400">
           Pilih 2-3 mobil dari katalog (klik ikon banding di kartu mobil) untuk
           membandingkan spesifikasinya berdampingan.
         </p>
         <Link
           href="/katalog"
-          className="mt-8 inline-flex items-center gap-2 rounded-full gradient-sunset px-6 py-3 font-semibold text-ink transition hover:opacity-90"
+          className="mt-8 inline-flex items-center gap-2 rounded-full bg-teal px-6 py-3 font-semibold text-white transition hover:bg-teal/90"
         >
           <ArrowLeft className="h-4 w-4" /> Ke Katalog
         </Link>
@@ -32,8 +32,8 @@ export default function BandingPage() {
     { label: "Tipe", render: (c) => c.type },
     { label: "Kategori", render: (c) => <span className="capitalize">{c.category}</span> },
     { label: "Status", render: (c) => <span className="capitalize">{c.status}</span> },
-    { label: "Harga Sewa/hari", render: (c) => c.price_rent ? <span className="font-semibold text-emas">{formatRupiah(c.price_rent)}</span> : "—" },
-    { label: "Harga Jual", render: (c) => c.price_sell ? <span className="font-semibold text-biru">{formatRupiah(c.price_sell)}</span> : "—" },
+    { label: "Harga Sewa/hari", render: (c) => c.price_rent ? <span className="font-semibold text-teal">{formatRupiah(c.price_rent)}</span> : "—" },
+    { label: "Harga Jual", render: (c) => c.price_sell ? <span className="font-semibold text-gray-700 dark:text-gray-200">{formatRupiah(c.price_sell)}</span> : "—" },
     { label: "Tahun", render: (c) => c.year },
     { label: "Jumlah Kursi", render: (c) => `${c.seats} kursi` },
     { label: "Transmisi", render: (c) => c.transmission },
@@ -44,7 +44,7 @@ export default function BandingPage() {
       label: "Dengan Sopir",
       render: (c) => c.dengan_sopir
         ? <Check className="mx-auto h-4 w-4 text-teal" />
-        : <Minus className="mx-auto h-4 w-4 text-gray-600" />,
+        : <Minus className="mx-auto h-4 w-4 text-gray-300 dark:text-gray-600" />,
     },
     { label: "Kelengkapan", render: (c) => c.kelengkapan ?? "—" },
   ];
@@ -53,68 +53,64 @@ export default function BandingPage() {
     <section className="mx-auto max-w-7xl px-4 py-12">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="font-display text-3xl font-extrabold md:text-4xl">
-            Bandingkan Mobil
-          </h1>
-          <p className="mt-2 text-gray-400">{items.length} mobil dibandingkan</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white md:text-4xl">Bandingkan Mobil</h1>
+          <p className="mt-2 text-gray-500 dark:text-gray-400">{items.length} mobil dibandingkan</p>
         </div>
         <button
           onClick={clear}
-          className="rounded-full border border-white/10 px-4 py-2 text-sm text-gray-300 hover:text-white"
+          className="rounded-full border border-gray-200 px-4 py-2 text-sm text-gray-500 hover:text-gray-900 dark:border-gray-700 dark:text-gray-400 dark:hover:text-white"
         >
           Kosongkan semua
         </button>
       </div>
 
-      <div className="mt-8 overflow-x-auto rounded-2xl border border-white/10">
+      <div className="mt-8 overflow-x-auto rounded-2xl border border-gray-200 shadow-sm dark:border-gray-700">
         <table className="w-full min-w-[640px]">
-          {/* Header: foto + nama */}
           <thead>
             <tr>
-              <th className="w-40 bg-white/5 p-4 text-left text-sm text-gray-400">Spesifikasi</th>
+              <th className="w-40 bg-gray-50 p-4 text-left text-sm text-gray-500 dark:bg-gray-800 dark:text-gray-400">Spesifikasi</th>
               {items.map((c) => (
-                <th key={c.id} className="border-l border-white/10 p-4 align-top">
-                  <div className="relative mx-auto aspect-[16/10] w-full max-w-[200px] overflow-hidden rounded-xl border border-white/10">
+                <th key={c.id} className="border-l border-gray-100 p-4 align-top dark:border-gray-700">
+                  <div className="relative mx-auto aspect-[16/10] w-full max-w-[200px] overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700">
                     {c.images[0] ? (
                       <Image src={c.images[0]} alt={c.name} fill sizes="200px" className="object-cover" />
                     ) : (
-                      <div className="flex h-full items-center justify-center bg-white/5 text-xs text-gray-600">No foto</div>
+                      <div className="flex h-full items-center justify-center bg-gray-50 text-xs text-gray-400 dark:bg-gray-800">No foto</div>
                     )}
                     <button
                       onClick={() => remove(c.id)}
-                      className="absolute right-1.5 top-1.5 rounded-full bg-merah p-1 text-white"
+                      className="absolute right-1.5 top-1.5 rounded-full bg-red-500 p-1 text-white"
                       aria-label="Hapus"
                     >
                       <X className="h-3 w-3" />
                     </button>
                   </div>
-                  <p className="mt-3 font-display text-lg font-bold">{c.name}</p>
+                  <p className="mt-3 font-bold text-gray-900 dark:text-white">{c.name}</p>
                 </th>
               ))}
             </tr>
           </thead>
 
-          <tbody className="text-sm">
+          <tbody className="text-sm text-gray-700 dark:text-gray-300">
             {rows.map((row, ri) => (
-              <tr key={row.label} className={ri % 2 ? "bg-white/[0.02]" : ""}>
-                <td className="bg-white/5 p-4 font-medium text-gray-400">{row.label}</td>
+              <tr key={row.label} className={ri % 2 ? "bg-gray-50 dark:bg-gray-800/50" : "bg-white dark:bg-gray-900"}>
+                <td className="bg-gray-50 p-4 font-medium text-gray-500 dark:bg-gray-800 dark:text-gray-400">{row.label}</td>
                 {items.map((c) => (
-                  <td key={c.id} className="border-l border-white/10 p-4 text-center">
+                  <td key={c.id} className="border-l border-gray-100 p-4 text-center dark:border-gray-700">
                     {row.render(c)}
                   </td>
                 ))}
               </tr>
             ))}
 
-            {/* Aksi WA */}
-            <tr>
-              <td className="bg-white/5 p-4" />
+            <tr className="bg-white dark:bg-gray-900">
+              <td className="bg-gray-50 p-4 dark:bg-gray-800" />
               {items.map((c) => (
-                <td key={c.id} className="border-l border-white/10 p-4 text-center">
+                <td key={c.id} className="border-l border-gray-100 p-4 text-center dark:border-gray-700">
                   <div className="flex flex-col gap-2">
                     <Link
                       href={`/mobil/${c.slug}`}
-                      className="rounded-lg border border-white/10 px-3 py-2 text-xs text-gray-200 hover:border-emas/40"
+                      className="rounded-lg border border-gray-200 px-3 py-2 text-xs text-gray-600 hover:border-teal/40 hover:text-teal dark:border-gray-700 dark:text-gray-400"
                     >
                       Lihat Detail
                     </Link>
@@ -134,7 +130,7 @@ export default function BandingPage() {
       </div>
 
       <div className="mt-8">
-        <Link href="/katalog" className="inline-flex items-center gap-2 text-emas hover:underline">
+        <Link href="/katalog" className="inline-flex items-center gap-2 text-sm font-medium text-teal hover:underline">
           <ArrowLeft className="h-4 w-4" /> Tambah mobil lain dari katalog
         </Link>
       </div>

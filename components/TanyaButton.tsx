@@ -17,7 +17,7 @@ Apakah mobil ini masih tersedia? Terima kasih.`;
     <a
       href={waLink(message)}
       target="_blank"
-      className="flex w-full items-center justify-center gap-2 rounded-xl border border-white/20 px-4 py-3 font-semibold text-gray-200 transition hover:border-emas hover:text-emas"
+      className="flex w-full items-center justify-center gap-2 rounded-xl border border-gray-200 px-4 py-3 font-semibold text-gray-700 transition hover:border-teal hover:text-teal dark:border-gray-700 dark:text-gray-300 dark:hover:border-teal dark:hover:text-teal"
     >
       <MessageCircle className="h-5 w-5" /> Tanya Ketersediaan
     </a>

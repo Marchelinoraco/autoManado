@@ -1,18 +1,14 @@
 import type { Metadata } from "next";
-import { Inter, Playfair_Display } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import FloatingWhatsApp from "@/components/FloatingWhatsApp";
 import { CompareProvider } from "@/components/CompareProvider";
 import CompareBar from "@/components/CompareBar";
+import { ThemeProvider } from "@/components/ThemeProvider";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
-const playfair = Playfair_Display({
-  subsets: ["latin"],
-  weight: ["500", "600", "700", "800", "900"],
-  variable: "--font-display",
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://automanado.vercel.app"),
@@ -44,15 +40,25 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="id" className={`${inter.variable} ${playfair.variable}`}>
-      <body className="min-h-screen font-sans antialiased">
-        <CompareProvider>
-          <Navbar />
-          <main>{children}</main>
-          <Footer />
-          <FloatingWhatsApp />
-          <CompareBar />
-        </CompareProvider>
+    <html lang="id" className={inter.variable}>
+      <head>
+        {/* Anti-flash: terapkan tema sebelum render */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){var t=localStorage.getItem('theme')||(window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');document.documentElement.classList.toggle('dark',t==='dark')})()`,
+          }}
+        />
+      </head>
+      <body className="min-h-screen font-sans antialiased bg-white dark:bg-gray-900">
+        <ThemeProvider>
+          <CompareProvider>
+            <Navbar />
+            <main>{children}</main>
+            <Footer />
+            <FloatingWhatsApp />
+            <CompareBar />
+          </CompareProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

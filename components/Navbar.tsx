@@ -3,8 +3,10 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Menu, X, Car } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { waLink } from "@/lib/whatsapp";
+import ThemeToggle from "./ThemeToggle";
+import Logo from "./Logo";
 
 const links = [
   { href: "/", label: "Beranda" },
@@ -19,7 +21,7 @@ export default function Navbar() {
   const pathname = usePathname();
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
+    const onScroll = () => setScrolled(window.scrollY > 16);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -31,71 +33,81 @@ export default function Navbar() {
     <header
       className={`sticky top-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "border-b border-white/10 bg-ink/80 backdrop-blur-lg"
-          : "border-b border-transparent bg-transparent"
+          ? "border-b border-gray-200/80 bg-white/90 shadow-sm backdrop-blur-lg dark:border-gray-700/80 dark:bg-gray-900/90"
+          : "bg-white dark:bg-gray-900"
       }`}
     >
-      <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3.5">
+      <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4">
         {/* Logo */}
-        <Link href="/" className="group flex items-center gap-2.5">
-          <span className="relative grid h-9 w-9 place-items-center rounded-xl gradient-sunset">
-            <Car className="h-5 w-5 text-ink" />
-          </span>
-          <span className="font-display text-xl font-bold tracking-tight">
-            Auto<span className="text-gradient">Manado</span>
+        <Link href="/" className="flex items-center gap-3">
+          <Logo size={38} />
+          <span className="text-[1.15rem] font-bold leading-none tracking-tight text-gray-900 dark:text-white">
+            Auto<span className="text-teal">Manado</span>
           </span>
         </Link>
 
         {/* Desktop links */}
         <div className="hidden items-center gap-8 md:flex">
           {links.map((l) => {
-            const activeLink = pathname === l.href;
+            const isActive = pathname === l.href;
             return (
               <Link
                 key={l.href}
                 href={l.href}
-                className={`group relative text-sm font-medium transition ${
-                  activeLink ? "text-emas" : "text-gray-300 hover:text-white"
+                className={`group relative text-sm font-medium transition-colors ${
+                  isActive
+                    ? "text-teal"
+                    : "text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
                 }`}
               >
                 {l.label}
                 <span
-                  className={`absolute -bottom-1.5 left-0 h-0.5 gradient-sunset transition-all duration-300 ${
-                    activeLink ? "w-full" : "w-0 group-hover:w-full"
+                  className={`absolute -bottom-1 left-0 h-0.5 rounded-full bg-teal transition-all duration-300 ${
+                    isActive ? "w-full" : "w-0 group-hover:w-full"
                   }`}
                 />
               </Link>
             );
           })}
+
+          <div className="h-5 w-px bg-gray-200 dark:bg-gray-700" />
+
+          <ThemeToggle />
+
           <a
             href={waLink("Halo AutoManado, saya ingin bertanya soal rental/jual mobil di Manado.")}
             target="_blank"
-            className="rounded-full gradient-sunset px-5 py-2 text-sm font-semibold text-ink transition hover:opacity-90"
+            className="rounded-full bg-teal px-5 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-teal/90 hover:shadow-md"
           >
             Hubungi WhatsApp
           </a>
         </div>
 
-        {/* Mobile toggle */}
-        <button
-          className="text-gray-200 md:hidden"
-          onClick={() => setOpen((v) => !v)}
-          aria-label="Menu"
-        >
-          {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-        </button>
+        {/* Mobile */}
+        <div className="flex items-center gap-1 md:hidden">
+          <ThemeToggle />
+          <button
+            className="rounded-lg p-2 text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800"
+            onClick={() => setOpen((v) => !v)}
+            aria-label="Menu"
+          >
+            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
+        </div>
       </nav>
 
       {/* Mobile menu */}
       {open && (
-        <div className="border-t border-white/10 bg-ink/95 px-4 py-4 backdrop-blur-lg md:hidden">
+        <div className="border-t border-gray-100 bg-white px-4 py-3 dark:border-gray-800 dark:bg-gray-900 md:hidden">
           <div className="flex flex-col gap-1">
             {links.map((l) => (
               <Link
                 key={l.href}
                 href={l.href}
-                className={`rounded-lg px-3 py-2.5 text-sm transition ${
-                  pathname === l.href ? "bg-white/5 text-emas" : "text-gray-200 hover:bg-white/5"
+                className={`rounded-lg px-3 py-2.5 text-sm font-medium transition ${
+                  pathname === l.href
+                    ? "bg-teal/10 text-teal"
+                    : "text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-white"
                 }`}
               >
                 {l.label}
@@ -104,7 +116,7 @@ export default function Navbar() {
             <a
               href={waLink("Halo AutoManado, saya ingin bertanya soal rental/jual mobil di Manado.")}
               target="_blank"
-              className="mt-2 rounded-full gradient-sunset px-5 py-2.5 text-center font-semibold text-ink"
+              className="mt-2 rounded-full bg-teal px-5 py-2.5 text-center text-sm font-semibold text-white"
             >
               Hubungi WhatsApp
             </a>

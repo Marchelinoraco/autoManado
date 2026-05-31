@@ -15,7 +15,7 @@ export default function PhotoGallery({ images, name }: { images: string[]; name:
 
   if (!images.length) {
     return (
-      <div className="flex aspect-[16/10] items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-gray-500">
+      <div className="flex aspect-[16/10] items-center justify-center rounded-2xl border border-gray-200 bg-gray-50 text-gray-400 dark:border-gray-700 dark:bg-gray-800">
         Foto belum tersedia
       </div>
     );
@@ -23,9 +23,8 @@ export default function PhotoGallery({ images, name }: { images: string[]; name:
 
   return (
     <>
-      {/* Foto utama */}
       <div
-        className="group relative aspect-[16/10] cursor-zoom-in overflow-hidden rounded-2xl border border-white/10"
+        className="group relative aspect-[16/10] cursor-zoom-in overflow-hidden rounded-2xl border border-gray-200 dark:border-gray-700"
         onClick={() => setLightbox(true)}
       >
         <Image
@@ -62,7 +61,6 @@ export default function PhotoGallery({ images, name }: { images: string[]; name:
         )}
       </div>
 
-      {/* Thumbnail strip */}
       {images.length > 1 && (
         <div className="mt-3 grid grid-cols-5 gap-2">
           {images.slice(0, 5).map((src, i) => (
@@ -71,8 +69,8 @@ export default function PhotoGallery({ images, name }: { images: string[]; name:
               onClick={() => setActive(i)}
               className={`group relative aspect-[4/3] overflow-hidden rounded-lg border-2 transition ${
                 i === active
-                  ? "border-emas shadow-md shadow-emas/30"
-                  : "border-white/10 hover:border-white/30"
+                  ? "border-teal shadow-sm"
+                  : "border-gray-200 hover:border-gray-300 dark:border-gray-700 dark:hover:border-gray-600"
               }`}
               title={LABELS[i] ?? `Foto ${i + 1}`}
             >
@@ -103,14 +101,12 @@ export default function PhotoGallery({ images, name }: { images: string[]; name:
           >
             <X className="h-6 w-6" />
           </button>
-
           <button
             className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-white/10 p-3 text-white hover:bg-white/20"
             onClick={(e) => { e.stopPropagation(); prev(); }}
           >
             <ChevronLeft className="h-7 w-7" />
           </button>
-
           <div
             className="relative h-[80vh] w-[90vw] max-w-5xl"
             onClick={(e) => e.stopPropagation()}
@@ -123,26 +119,23 @@ export default function PhotoGallery({ images, name }: { images: string[]; name:
               className="object-contain"
             />
           </div>
-
           <button
             className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-white/10 p-3 text-white hover:bg-white/20"
             onClick={(e) => { e.stopPropagation(); next(); }}
           >
             <ChevronRight className="h-7 w-7" />
           </button>
-
           <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-2">
             {images.map((_, i) => (
               <button
                 key={i}
                 onClick={(e) => { e.stopPropagation(); setActive(i); }}
                 className={`h-2 rounded-full transition-all ${
-                  i === active ? "w-6 bg-emas" : "w-2 bg-white/40"
+                  i === active ? "w-6 bg-teal" : "w-2 bg-white/40"
                 }`}
               />
             ))}
           </div>
-
           <p className="absolute bottom-10 left-1/2 -translate-x-1/2 text-sm font-medium text-white/70">
             {LABELS[active] ?? `Foto ${active + 1}`} — {active + 1}/{images.length}
           </p>

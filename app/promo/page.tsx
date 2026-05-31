@@ -28,25 +28,25 @@ const promos = [
 
 export default function PromoPage() {
   return (
-    <section className="mx-auto max-w-7xl px-4 py-12">
-      <h1 className="text-3xl font-extrabold md:text-4xl">Promo & Diskon</h1>
-      <p className="mt-2 text-gray-400">Penawaran terbaik untuk Anda di Kota Manado.</p>
+    <section className="mx-auto max-w-7xl px-4 py-14">
+      <h1 className="text-3xl font-bold text-gray-900 dark:text-white md:text-4xl">Promo &amp; Diskon</h1>
+      <p className="mt-2 text-gray-500 dark:text-gray-400">Penawaran terbaik untuk Anda di Kota Manado.</p>
 
-      <div className="mt-10 grid gap-6 md:grid-cols-3">
+      <div className="mt-10 grid gap-5 md:grid-cols-3">
         {promos.map((p) => (
           <div
             key={p.title}
-            className="relative overflow-hidden rounded-2xl border border-emas/30 bg-gradient-to-br from-merah/20 to-emas/5 p-6"
+            className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition hover:border-teal/30 hover:shadow-md dark:border-gray-700 dark:bg-gray-800"
           >
-            <span className="inline-flex items-center gap-1 rounded-full bg-emas px-3 py-1 text-xs font-bold text-ink">
+            <span className="inline-flex items-center gap-1 rounded-full bg-teal px-3 py-1 text-xs font-bold text-white">
               <Tag className="h-3 w-3" /> {p.tag}
             </span>
-            <h3 className="mt-4 text-xl font-bold">{p.title}</h3>
-            <p className="mt-2 text-sm text-gray-300">{p.desc}</p>
+            <h3 className="mt-4 text-xl font-bold text-gray-900 dark:text-white">{p.title}</h3>
+            <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">{p.desc}</p>
             <a
-              href={waLink(`Halo ManaRent, saya tertarik dengan promo: ${p.title}`)}
+              href={waLink(`Halo AutoManado, saya tertarik dengan promo: ${p.title}`)}
               target="_blank"
-              className="mt-5 inline-flex items-center gap-2 rounded-full bg-merah px-5 py-2 text-sm font-semibold text-white transition hover:opacity-90"
+              className="mt-5 inline-flex items-center gap-2 rounded-full bg-teal px-5 py-2 text-sm font-semibold text-white transition hover:bg-teal/90"
             >
               <MessageCircle className="h-4 w-4" /> Klaim Promo
             </a>
