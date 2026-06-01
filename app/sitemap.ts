@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { getAllSlugs } from "@/lib/cars";
+import { getAllPosts } from "@/lib/blog";
 import { SITE_URL } from "@/lib/site";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -12,7 +13,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/jual-mobil-bekas-manado",
   ];
 
-  const staticPages = ["", "/katalog", "/promo", "/banding", "/tentang", ...landingPages].map((p) => ({
+  const staticPages = ["", "/katalog", "/promo", "/banding", "/tentang", "/blog", ...landingPages].map((p) => ({
     url: `${SITE_URL}${p}`,
     lastModified: new Date(),
     changeFrequency: "weekly" as const,
@@ -26,5 +27,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
-  return [...staticPages, ...carPages];
+  const blogPages = getAllPosts().map((post) => ({
+    url: `${SITE_URL}/blog/${post.slug}`,
+    lastModified: new Date(post.updated ?? post.date),
+    changeFrequency: "monthly" as const,
+    priority: 0.6,
+  }));
+
+  return [...staticPages, ...carPages, ...blogPages];
 }

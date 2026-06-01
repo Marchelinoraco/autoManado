@@ -12,6 +12,7 @@ const links = [
   { href: "/", label: "Beranda" },
   { href: "/katalog", label: "Katalog" },
   { href: "/promo", label: "Promo" },
+  { href: "/blog", label: "Artikel" },
   { href: "/tentang", label: "Tentang" },
 ];
 

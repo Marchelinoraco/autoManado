@@ -26,6 +26,7 @@ export default function Footer() {
             <li><Link href="/katalog" className="transition hover:text-gray-900 dark:hover:text-white">Katalog Mobil</Link></li>
             <li><Link href="/banding" className="transition hover:text-gray-900 dark:hover:text-white">Bandingkan Mobil</Link></li>
             <li><Link href="/promo" className="transition hover:text-gray-900 dark:hover:text-white">Promo</Link></li>
+            <li><Link href="/blog" className="transition hover:text-gray-900 dark:hover:text-white">Artikel & Tips</Link></li>
             <li><Link href="/tentang" className="transition hover:text-gray-900 dark:hover:text-white">Tentang Kami</Link></li>
           </ul>
         </div>
