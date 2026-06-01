@@ -4,14 +4,17 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   Car as CarIcon, Plus, Pencil, Trash2, LogOut,
-  CheckCircle2, Clock, XCircle, LayoutDashboard, MessageSquareQuote,
+  CheckCircle2, Clock, XCircle, LayoutDashboard,
+  MessageSquareQuote, Images, ShoppingCart, Key,
 } from "lucide-react";
 import { Car, Testimonial } from "@/lib/types";
 import { formatRupiah } from "@/lib/whatsapp";
 import CarForm from "./CarForm";
 import TestimonialPanel from "./TestimonialPanel";
+import GalleryPanel from "./GalleryPanel";
 
 type Stats = { total: number; tersedia: number; disewa: number; terjual: number };
+type MainTab = "sewa" | "jual" | "galeri" | "testimoni";
 
 export default function DashboardClient({
   initialCars,
@@ -23,7 +26,7 @@ export default function DashboardClient({
   initialTestimonials: Testimonial[];
 }) {
   const router = useRouter();
-  const [tab, setTab] = useState<"mobil" | "testimoni">("mobil");
+  const [tab, setTab] = useState<MainTab>("sewa");
   const [cars, setCars] = useState(initialCars);
   const [editing, setEditing] = useState<Car | null>(null);
   const [adding, setAdding] = useState(false);
@@ -52,8 +55,21 @@ export default function DashboardClient({
     setAdding(false);
   }
 
+  // Filter berdasarkan tab aktif
+  const sewaList = cars.filter((c) => c.category === "rental" || c.category === "keduanya");
+  const jualList = cars.filter((c) => c.category === "jual" || c.category === "keduanya");
+  const activeCars = tab === "sewa" ? sewaList : tab === "jual" ? jualList : [];
+
+  const mainTabs = [
+    { key: "sewa",      label: "Sewa",     icon: Key,                count: sewaList.length },
+    { key: "jual",      label: "Jual",     icon: ShoppingCart,       count: jualList.length },
+    { key: "galeri",    label: "Galeri",   icon: Images,             count: null },
+    { key: "testimoni", label: "Testimoni",icon: MessageSquareQuote, count: null },
+  ] as const;
+
   return (
     <div className="mx-auto max-w-7xl px-4 py-10">
+      {/* Header */}
       <div className="flex items-center justify-between">
         <h1 className="flex items-center gap-2 text-2xl font-bold text-gray-900 dark:text-white">
           <LayoutDashboard className="h-6 w-6 text-teal" /> Dashboard Admin
@@ -66,12 +82,13 @@ export default function DashboardClient({
         </button>
       </div>
 
+      {/* Stats */}
       <div className="mt-6 grid grid-cols-2 gap-4 md:grid-cols-4">
         {[
-          { label: "Total Mobil", value: stats.total, icon: CarIcon, color: "text-teal" },
-          { label: "Tersedia", value: stats.tersedia, icon: CheckCircle2, color: "text-green-500" },
-          { label: "Sedang Disewa", value: stats.disewa, icon: Clock, color: "text-amber-500" },
-          { label: "Terjual", value: stats.terjual, icon: XCircle, color: "text-red-500" },
+          { label: "Total Mobil",    value: stats.total,    icon: CarIcon,       color: "text-teal" },
+          { label: "Tersedia",       value: stats.tersedia, icon: CheckCircle2,  color: "text-green-500" },
+          { label: "Sedang Disewa",  value: stats.disewa,   icon: Clock,         color: "text-amber-500" },
+          { label: "Terjual",        value: stats.terjual,  icon: XCircle,       color: "text-red-500" },
         ].map((s) => (
           <div key={s.label} className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-700 dark:bg-gray-800">
             <s.icon className={`h-6 w-6 ${s.color}`} />
@@ -81,29 +98,45 @@ export default function DashboardClient({
         ))}
       </div>
 
-      <div className="mt-8 flex gap-2 border-b border-gray-200 dark:border-gray-700">
-        {[
-          { key: "mobil",      label: "Daftar Mobil",    icon: CarIcon },
-          { key: "testimoni",  label: "Testimoni Klien", icon: MessageSquareQuote },
-        ].map((t) => (
+      {/* Tab navigation */}
+      <div className="mt-8 flex gap-1 rounded-xl border border-gray-200 bg-gray-50 p-1 dark:border-gray-700 dark:bg-gray-800/50">
+        {mainTabs.map((t) => (
           <button
             key={t.key}
-            onClick={() => setTab(t.key as typeof tab)}
-            className={`flex items-center gap-2 rounded-t-xl px-5 py-2.5 text-sm font-semibold transition ${
+            onClick={() => setTab(t.key)}
+            className={`flex flex-1 items-center justify-center gap-2 rounded-lg px-3 py-2.5 text-sm font-semibold transition ${
               tab === t.key
-                ? "bg-teal/10 text-teal border-b-2 border-teal"
+                ? "bg-white text-teal shadow-sm dark:bg-gray-800 dark:text-teal"
                 : "text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
             }`}
           >
-            <t.icon className="h-4 w-4" /> {t.label}
+            <t.icon className="h-4 w-4" />
+            <span className="hidden sm:inline">{t.label}</span>
+            {t.count !== null && (
+              <span className={`rounded-full px-2 py-0.5 text-xs font-bold ${
+                tab === t.key ? "bg-teal/10 text-teal" : "bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-400"
+              }`}>
+                {t.count}
+              </span>
+            )}
           </button>
         ))}
       </div>
 
-      {tab === "mobil" && (
+      {/* ─── TAB SEWA & JUAL ─── */}
+      {(tab === "sewa" || tab === "jual") && (
         <>
           <div className="mt-6 flex items-center justify-between">
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white">Daftar Mobil</h2>
+            <div>
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                Mobil {tab === "sewa" ? "Sewa (Rental)" : "Jual"}
+              </h2>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                {tab === "sewa"
+                  ? "Kategori rental & keduanya"
+                  : "Kategori jual & keduanya"}
+              </p>
+            </div>
             <button
               onClick={() => { setAdding(true); setEditing(null); }}
               className="flex items-center gap-2 rounded-xl bg-teal px-4 py-2 text-sm font-semibold text-white transition hover:bg-teal/90"
@@ -112,14 +145,16 @@ export default function DashboardClient({
             </button>
           </div>
 
+          {/* Modal Form */}
           {(adding || editing) && (
             <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/50 py-8">
               <div className="w-full max-w-2xl rounded-2xl border border-gray-200 bg-white p-6 shadow-xl dark:border-gray-700 dark:bg-gray-900">
                 <h3 className="mb-5 text-xl font-bold text-gray-900 dark:text-white">
-                  {editing ? "Edit Mobil" : "Tambah Mobil Baru"}
+                  {editing ? "Edit Mobil" : `Tambah Mobil ${tab === "sewa" ? "Sewa" : "Jual"}`}
                 </h3>
                 <CarForm
                   initial={editing ?? undefined}
+                  defaultCategory={tab === "jual" ? "jual" : "rental"}
                   onSaved={(car) => handleSaved(car, !editing)}
                   onCancel={() => { setAdding(false); setEditing(null); }}
                 />
@@ -127,26 +162,40 @@ export default function DashboardClient({
             </div>
           )}
 
+          {/* Tabel mobil */}
           <div className="mt-4 overflow-x-auto rounded-2xl border border-gray-200 shadow-sm dark:border-gray-700">
             <table className="w-full text-sm">
               <thead className="border-b border-gray-100 bg-gray-50 text-gray-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400">
                 <tr>
+                  <th className="px-4 py-3 text-left">Foto</th>
                   <th className="px-4 py-3 text-left">Nama</th>
                   <th className="px-4 py-3 text-left">Tipe</th>
-                  <th className="px-4 py-3 text-left">Kategori</th>
                   <th className="px-4 py-3 text-left">Status</th>
-                  <th className="px-4 py-3 text-left">Sewa/hari</th>
-                  <th className="px-4 py-3 text-left">Harga Jual</th>
+                  {tab === "sewa" && <th className="px-4 py-3 text-left">Sewa/hari</th>}
+                  {tab === "jual" && <th className="px-4 py-3 text-left">Harga Jual</th>}
                   <th className="px-4 py-3 text-left">Tahun</th>
+                  <th className="px-4 py-3 text-left">Foto</th>
                   <th className="px-4 py-3 text-center">Aksi</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
-                {cars.map((car) => (
+                {activeCars.map((car) => (
                   <tr key={car.id} className="bg-white hover:bg-gray-50 dark:bg-gray-900 dark:hover:bg-gray-800">
+                    <td className="px-4 py-3">
+                      {car.images[0] ? (
+                        <img
+                          src={car.images[0]}
+                          alt={car.name}
+                          className="h-10 w-14 rounded-lg object-cover border border-gray-200 dark:border-gray-700"
+                        />
+                      ) : (
+                        <div className="flex h-10 w-14 items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-800">
+                          <CarIcon className="h-4 w-4 text-gray-400" />
+                        </div>
+                      )}
+                    </td>
                     <td className="px-4 py-3 font-medium text-gray-900 dark:text-white">{car.name}</td>
                     <td className="px-4 py-3 text-gray-500 dark:text-gray-400">{car.type}</td>
-                    <td className="px-4 py-3 capitalize text-gray-500 dark:text-gray-400">{car.category}</td>
                     <td className="px-4 py-3">
                       <span className={`rounded-full px-2 py-0.5 text-xs font-semibold capitalize
                         ${car.status === "tersedia" ? "bg-green-50 text-green-600 dark:bg-green-900/20 dark:text-green-400" :
@@ -155,9 +204,14 @@ export default function DashboardClient({
                         {car.status}
                       </span>
                     </td>
-                    <td className="px-4 py-3 font-medium text-teal">{formatRupiah(car.price_rent)}</td>
-                    <td className="px-4 py-3 text-gray-700 dark:text-gray-300">{formatRupiah(car.price_sell)}</td>
+                    {tab === "sewa" && (
+                      <td className="px-4 py-3 font-medium text-teal">{formatRupiah(car.price_rent)}</td>
+                    )}
+                    {tab === "jual" && (
+                      <td className="px-4 py-3 font-medium text-gray-700 dark:text-gray-300">{formatRupiah(car.price_sell)}</td>
+                    )}
                     <td className="px-4 py-3 text-gray-500 dark:text-gray-400">{car.year}</td>
+                    <td className="px-4 py-3 text-gray-500 dark:text-gray-400">{car.images.length} foto</td>
                     <td className="px-4 py-3">
                       <div className="flex items-center justify-center gap-2">
                         <button
@@ -177,10 +231,10 @@ export default function DashboardClient({
                     </td>
                   </tr>
                 ))}
-                {cars.length === 0 && (
+                {activeCars.length === 0 && (
                   <tr>
                     <td colSpan={8} className="py-12 text-center text-gray-400">
-                      Belum ada data mobil.
+                      Belum ada mobil {tab === "sewa" ? "sewa" : "jual"}.
                     </td>
                   </tr>
                 )}
@@ -190,9 +244,11 @@ export default function DashboardClient({
         </>
       )}
 
-      {tab === "testimoni" && (
-        <TestimonialPanel initialList={initialTestimonials} />
-      )}
+      {/* ─── TAB GALERI ─── */}
+      {tab === "galeri" && <GalleryPanel />}
+
+      {/* ─── TAB TESTIMONI ─── */}
+      {tab === "testimoni" && <TestimonialPanel initialList={initialTestimonials} />}
     </div>
   );
 }

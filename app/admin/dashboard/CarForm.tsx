@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Car } from "@/lib/types";
-import { AlertTriangle, Images } from "lucide-react";
+import { AlertTriangle, Images, Upload, Loader2, X } from "lucide-react";
 
 const TYPES         = ["MPV", "SUV", "Sedan", "City Car", "Pickup", "Minibus"];
 const TRANSMISSIONS = ["Manual", "Otomatis"];
@@ -14,17 +14,18 @@ const KONDISI       = ["", "Baik Sekali", "Baik", "Cukup", "Perlu Service"] as c
 
 type Props = {
   initial?: Car;
+  defaultCategory?: "rental" | "jual" | "keduanya";
   onSaved: (car: Car) => void;
   onCancel: () => void;
 };
 
-const inputClass = "mt-1 w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-gray-900 outline-none focus:border-teal focus:ring-1 focus:ring-teal/20";
+const inputClass = "mt-1 w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-gray-900 outline-none focus:border-teal focus:ring-1 focus:ring-teal/20 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:placeholder-gray-500";
 
-export default function CarForm({ initial, onSaved, onCancel }: Props) {
+export default function CarForm({ initial, defaultCategory = "rental", onSaved, onCancel }: Props) {
   const [form, setForm] = useState({
     name:          initial?.name          ?? "",
     type:          initial?.type          ?? "MPV",
-    category:      initial?.category      ?? "rental",
+    category:      initial?.category      ?? defaultCategory,
     status:        initial?.status        ?? "tersedia",
     price_rent:    initial?.price_rent    ?? "",
     price_sell:    initial?.price_sell    ?? "",
@@ -40,8 +41,11 @@ export default function CarForm({ initial, onSaved, onCancel }: Props) {
     description:   initial?.description   ?? "",
     images:        initial?.images.join("\n") ?? "",
   });
-  const [loading, setLoading] = useState(false);
-  const [error, setError]     = useState("");
+  const [loading, setLoading]     = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [uploadErr, setUploadErr] = useState("");
+  const [error, setError]         = useState("");
+  const fileRef = useRef<HTMLInputElement>(null);
 
   const set = (k: string, v: string | number | boolean) =>
     setForm((f) => ({ ...f, [k]: v }));
@@ -49,6 +53,35 @@ export default function CarForm({ initial, onSaved, onCancel }: Props) {
   const imageList = form.images.split("\n").map((s) => s.trim()).filter(Boolean);
   const photoWarning = imageList.length < 5;
 
+  // ── Upload gambar via API ──────────────────────────────────
+  async function handleUpload(files: FileList | null) {
+    if (!files || files.length === 0) return;
+    setUploadErr("");
+    setUploading(true);
+    const urls: string[] = [];
+
+    for (const file of Array.from(files)) {
+      const fd = new FormData();
+      fd.append("file", file);
+      const res = await fetch("/api/admin/upload", { method: "POST", body: fd });
+      const data = await res.json();
+      if (!res.ok) {
+        setUploadErr(data.message ?? "Upload gagal.");
+        break;
+      }
+      urls.push(data.url);
+    }
+
+    if (urls.length > 0) {
+      const existing = form.images.trim();
+      const newImages = existing ? `${existing}\n${urls.join("\n")}` : urls.join("\n");
+      set("images", newImages);
+    }
+    setUploading(false);
+    if (fileRef.current) fileRef.current.value = "";
+  }
+
+  // ── Submit form ────────────────────────────────────────────
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
@@ -99,7 +132,7 @@ export default function CarForm({ initial, onSaved, onCancel }: Props) {
     extra?: React.InputHTMLAttributes<HTMLInputElement>
   ) => (
     <label className="block text-sm">
-      <span className="text-gray-600">{label}</span>
+      <span className="text-gray-600 dark:text-gray-400">{label}</span>
       <input
         {...extra}
         value={String(form[key as keyof typeof form])}
@@ -111,7 +144,7 @@ export default function CarForm({ initial, onSaved, onCancel }: Props) {
 
   const select = (label: string, key: string, options: readonly string[]) => (
     <label className="block text-sm">
-      <span className="text-gray-600">{label}</span>
+      <span className="text-gray-600 dark:text-gray-400">{label}</span>
       <select
         value={String(form[key as keyof typeof form])}
         onChange={(e) => set(key, e.target.value)}
@@ -157,7 +190,7 @@ export default function CarForm({ initial, onSaved, onCancel }: Props) {
       <div className="grid grid-cols-2 gap-4">
         {field("Plat Asal", "plat_asal", { placeholder: "DB / DM / B / dll" })}
         <label className="block text-sm">
-          <span className="text-gray-600">Dengan Sopir</span>
+          <span className="text-gray-600 dark:text-gray-400">Dengan Sopir</span>
           <div className="mt-1">
             <button
               type="button"
@@ -165,7 +198,7 @@ export default function CarForm({ initial, onSaved, onCancel }: Props) {
               className={`h-10 w-full rounded-lg border px-3 text-left text-sm font-medium transition ${
                 form.dengan_sopir
                   ? "border-teal/60 bg-teal/10 text-teal"
-                  : "border-gray-200 text-gray-500 hover:border-teal/30"
+                  : "border-gray-200 text-gray-500 hover:border-teal/30 dark:border-gray-700"
               }`}
             >
               {form.dengan_sopir ? "✓ Tersedia dengan sopir" : "Tidak tersedia sopir"}
@@ -175,7 +208,7 @@ export default function CarForm({ initial, onSaved, onCancel }: Props) {
       </div>
 
       <label className="block text-sm">
-        <span className="text-gray-600">Kelengkapan Dokumen</span>
+        <span className="text-gray-600 dark:text-gray-400">Kelengkapan Dokumen</span>
         <input
           value={form.kelengkapan}
           onChange={(e) => set("kelengkapan", e.target.value)}
@@ -185,7 +218,7 @@ export default function CarForm({ initial, onSaved, onCancel }: Props) {
       </label>
 
       <label className="block text-sm">
-        <span className="text-gray-600">Deskripsi</span>
+        <span className="text-gray-600 dark:text-gray-400">Deskripsi</span>
         <textarea
           value={form.description}
           onChange={(e) => set("description", e.target.value)}
@@ -195,44 +228,94 @@ export default function CarForm({ initial, onSaved, onCancel }: Props) {
         />
       </label>
 
-      {/* Kolom foto */}
-      <div>
-        <label className="block text-sm">
-          <div className="flex items-center justify-between">
-            <span className="flex items-center gap-2 text-gray-600">
-              <Images className="h-4 w-4" />
-              URL Foto (1 URL per baris, urutan: Depan · Samping · Belakang · Interior · Dashboard)
-            </span>
+      {/* ── Kolom foto ── */}
+      <div className="space-y-2">
+        <div className="flex items-center justify-between">
+          <span className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+            <Images className="h-4 w-4" />
+            Foto Mobil
+          </span>
+          <div className="flex items-center gap-2">
             <span className={`text-xs font-semibold ${imageList.length >= 5 ? "text-green-600" : "text-amber-500"}`}>
               {imageList.length}/5 foto
             </span>
+            {/* Upload button */}
+            <input
+              ref={fileRef}
+              type="file"
+              accept="image/jpeg,image/png,image/webp,image/gif"
+              multiple
+              className="hidden"
+              onChange={(e) => handleUpload(e.target.files)}
+            />
+            <button
+              type="button"
+              onClick={() => fileRef.current?.click()}
+              disabled={uploading}
+              className="flex items-center gap-1.5 rounded-lg bg-teal/10 px-3 py-1.5 text-xs font-semibold text-teal transition hover:bg-teal hover:text-white disabled:opacity-60"
+            >
+              {uploading
+                ? <><Loader2 className="h-3.5 w-3.5 animate-spin" /> Mengupload...</>
+                : <><Upload className="h-3.5 w-3.5" /> Upload Gambar</>
+              }
+            </button>
           </div>
-          <textarea
-            value={form.images}
-            onChange={(e) => set("images", e.target.value)}
-            rows={6}
-            placeholder={
-              "https://link-foto-1.jpg  ← Tampak Depan\n" +
-              "https://link-foto-2.jpg  ← Tampak Samping\n" +
-              "https://link-foto-3.jpg  ← Tampak Belakang\n" +
-              "https://link-foto-4.jpg  ← Interior\n" +
-              "https://link-foto-5.jpg  ← Dashboard"
-            }
-            className={`${inputClass} font-mono text-xs`}
-          />
-        </label>
+        </div>
 
-        {photoWarning && (
-          <p className="mt-1.5 flex items-center gap-1.5 rounded-lg bg-amber-50 border border-amber-200 px-3 py-2 text-xs text-amber-600">
+        {uploadErr && (
+          <p className="rounded-lg border border-red-200 bg-red-50 px-3 py-1.5 text-xs text-red-600 dark:border-red-900 dark:bg-red-900/20 dark:text-red-400">
+            {uploadErr}
+          </p>
+        )}
+
+        {/* Preview thumbnails */}
+        {imageList.length > 0 && (
+          <div className="flex flex-wrap gap-2">
+            {imageList.map((url, i) => (
+              <div key={i} className="group relative h-16 w-20 overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700">
+                <img src={url} alt={`foto ${i+1}`} className="h-full w-full object-cover" />
+                <button
+                  type="button"
+                  onClick={() => {
+                    const newList = imageList.filter((_, idx) => idx !== i);
+                    set("images", newList.join("\n"));
+                  }}
+                  className="absolute right-0.5 top-0.5 hidden rounded-full bg-red-500 p-0.5 text-white group-hover:flex"
+                >
+                  <X className="h-3 w-3" />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* URL textarea */}
+        <textarea
+          value={form.images}
+          onChange={(e) => set("images", e.target.value)}
+          rows={4}
+          placeholder={
+            "https://link-foto-1.jpg  ← Tampak Depan\n" +
+            "https://link-foto-2.jpg  ← Tampak Samping\n" +
+            "https://link-foto-3.jpg  ← Interior\n" +
+            "(atau upload langsung dengan tombol di atas)"
+          }
+          className={`${inputClass} font-mono text-xs`}
+        />
+
+        {photoWarning && imageList.length > 0 && (
+          <p className="flex items-center gap-1.5 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-600 dark:border-amber-900 dark:bg-amber-900/20 dark:text-amber-400">
             <AlertTriangle className="h-3.5 w-3.5 shrink-0" />
-            Standar AutoManado: 5 foto (Depan, Samping, Belakang, Interior, Dashboard).
-            Saat ini baru {imageList.length} foto.
+            Rekomendasi 5 foto (Depan, Samping, Belakang, Interior, Dashboard).
+            Saat ini {imageList.length} foto.
           </p>
         )}
       </div>
 
       {error && (
-        <p className="rounded-lg bg-red-50 border border-red-200 px-4 py-2 text-sm text-red-600">{error}</p>
+        <p className="rounded-lg border border-red-200 bg-red-50 px-4 py-2 text-sm text-red-600 dark:border-red-900 dark:bg-red-900/20 dark:text-red-400">
+          {error}
+        </p>
       )}
 
       <div className="flex gap-3 pt-2">
@@ -246,7 +329,7 @@ export default function CarForm({ initial, onSaved, onCancel }: Props) {
         <button
           type="button"
           onClick={onCancel}
-          className="flex-1 rounded-xl border border-gray-200 py-2.5 text-gray-600 hover:text-gray-900"
+          className="flex-1 rounded-xl border border-gray-200 py-2.5 text-gray-600 hover:text-gray-900 dark:border-gray-700 dark:text-gray-400"
         >
           Batal
         </button>
