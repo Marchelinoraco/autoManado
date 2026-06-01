@@ -13,13 +13,32 @@ export default function Counter({
   label: string;
   size?: "sm" | "lg";
 }) {
-  const [value, setValue] = useState(0);
+  // Inisialisasi dengan angka final → SSR & no-JS menampilkan nilai asli (penting untuk SEO/crawler).
+  const [value, setValue] = useState(to);
   const ref = useRef<HTMLDivElement>(null);
   const started = useRef(false);
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+
+    // Hormati preferensi reduce-motion: biarkan angka final, tanpa animasi.
+    if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) {
+      started.current = true;
+      return;
+    }
+
+    // Jika elemen sudah terlihat saat mount (mis. di hero/atas layar),
+    // tampilkan angka asli langsung tanpa flash ke 0.
+    const rect = el.getBoundingClientRect();
+    const inViewAtMount = rect.top < window.innerHeight && rect.bottom > 0;
+    if (inViewAtMount) {
+      started.current = true;
+      return;
+    }
+
+    // Elemen di bawah layar: reset (saat masih tak terlihat) lalu animasikan saat masuk viewport.
+    setValue(0);
     const obs = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && !started.current) {

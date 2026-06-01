@@ -5,10 +5,17 @@ import LandingTemplate from "@/components/LandingTemplate";
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: "Sewa Mobil Lepas Kunci Manado — Tanpa Sopir | AutoManado",
+  title: "Sewa Mobil Lepas Kunci Manado — Tanpa Sopir",
   description:
     "Sewa mobil lepas kunci di Manado tanpa sopir, bebas berkendara sendiri. Syarat mudah, harga jelas, armada terawat. Booking cepat via WhatsApp bersama AutoManado.",
   alternates: { canonical: "/sewa-mobil-lepas-kunci-manado" },
+  openGraph: {
+    title: "Sewa Mobil Lepas Kunci Manado — Tanpa Sopir | AutoManado",
+    description:
+      "Sewa mobil lepas kunci di Manado tanpa sopir. Syarat mudah, harga jelas. Booking via WhatsApp.",
+    url: "/sewa-mobil-lepas-kunci-manado",
+    type: "website",
+  },
 };
 
 export default async function Page() {

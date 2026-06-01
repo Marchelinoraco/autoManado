@@ -22,7 +22,9 @@ export const SITE = {
   geo: { lat: 1.4748, lng: 124.8421 },
   /** Area layanan untuk LocalBusiness areaServed */
   areaServed: ["Manado", "Tomohon", "Bitung", "Minahasa", "Likupang", "Airmadidi"],
-  ogImage: `${SITE_URL}/og-image.jpg`,
+  // Pakai endpoint OG dinamis bawaan Next (app/opengraph-image.tsx) — selalu valid,
+  // menggantikan /og-image.jpg yang tidak ada (404) dan merusak gambar di structured data.
+  ogImage: `${SITE_URL}/opengraph-image`,
 } as const;
 
 /** JSON-LD AutoRental (LocalBusiness) — dipasang sekali di layout untuk local SEO */
@@ -34,7 +36,8 @@ export const businessJsonLd = {
   description: SITE.description,
   url: SITE_URL,
   telephone: SITE.telephone,
-  priceRange: "Rp",
+  priceRange: "Rp 350.000 - Rp 3.500.000",
+  currenciesAccepted: "IDR",
   image: SITE.ogImage,
   address: {
     "@type": "PostalAddress",
@@ -48,5 +51,19 @@ export const businessJsonLd = {
     longitude: SITE.geo.lng,
   },
   areaServed: SITE.areaServed.map((name) => ({ "@type": "City", name })),
+  openingHoursSpecification: {
+    "@type": "OpeningHoursSpecification",
+    dayOfWeek: [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+      "Sunday",
+    ],
+    opens: "08:00",
+    closes: "21:00",
+  },
   sameAs: [`https://wa.me/${SITE.whatsapp}`],
 };

@@ -5,10 +5,17 @@ import LandingTemplate from "@/components/LandingTemplate";
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: "Jual Beli Mobil Bekas Manado — Berkualitas & Terawat | AutoManado",
+  title: "Jual Beli Mobil Bekas Manado — Berkualitas & Terawat",
   description:
     "Jual beli mobil bekas berkualitas di Manado. Unit terawat, kondisi jelas, harga nego transparan. Lihat foto & detail lengkap, lalu tanya langsung via WhatsApp di AutoManado.",
   alternates: { canonical: "/jual-mobil-bekas-manado" },
+  openGraph: {
+    title: "Jual Beli Mobil Bekas Manado — Berkualitas & Terawat | AutoManado",
+    description:
+      "Jual beli mobil bekas berkualitas di Manado. Unit terawat, kondisi jelas, harga nego transparan. Tanya via WhatsApp.",
+    url: "/jual-mobil-bekas-manado",
+    type: "website",
+  },
 };
 
 export default async function Page() {

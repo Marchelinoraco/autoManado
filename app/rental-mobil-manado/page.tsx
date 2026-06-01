@@ -5,10 +5,17 @@ import LandingTemplate from "@/components/LandingTemplate";
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: "Rental Mobil Manado Murah — Harga Transparan | AutoManado",
+  title: "Rental Mobil Manado Murah — Harga Transparan",
   description:
     "Rental mobil Manado murah & terpercaya. Sewa harian, mingguan, bulanan — Avanza, Innova, Fortuner, Alphard, Hiace. Lepas kunci atau dengan sopir. Pesan cepat via WhatsApp.",
   alternates: { canonical: "/rental-mobil-manado" },
+  openGraph: {
+    title: "Rental Mobil Manado Murah & Terpercaya | AutoManado",
+    description:
+      "Sewa mobil di Manado: harian, mingguan, bulanan. Lepas kunci atau dengan sopir. Pesan cepat via WhatsApp.",
+    url: "/rental-mobil-manado",
+    type: "website",
+  },
 };
 
 export default async function Page() {

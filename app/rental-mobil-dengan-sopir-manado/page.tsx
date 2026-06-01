@@ -5,10 +5,17 @@ import LandingTemplate from "@/components/LandingTemplate";
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: "Rental Mobil dengan Sopir Manado — Sopir Berpengalaman | AutoManado",
+  title: "Rental Mobil dengan Sopir Manado — Sopir Berpengalaman",
   description:
     "Rental mobil dengan sopir di Manado untuk wisata Bunaken, Tomohon & dinas. Sopir ramah dan paham rute, duduk santai sampai tujuan. Pesan via WhatsApp di AutoManado.",
   alternates: { canonical: "/rental-mobil-dengan-sopir-manado" },
+  openGraph: {
+    title: "Rental Mobil dengan Sopir Manado — Sopir Berpengalaman | AutoManado",
+    description:
+      "Rental mobil + sopir di Manado untuk wisata Bunaken, Tomohon & dinas. Sopir paham rute. Pesan via WhatsApp.",
+    url: "/rental-mobil-dengan-sopir-manado",
+    type: "website",
+  },
 };
 
 export default async function Page() {
