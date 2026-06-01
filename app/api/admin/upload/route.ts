@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "@/lib/session";
 import cloudinary, { FOLDER } from "@/lib/cloudinary";
+import { query } from "@/lib/db";
 
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif", "image/jpg"];
 const MAX_SIZE_MB   = 10;
@@ -25,25 +26,40 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: `Ukuran file maksimal ${MAX_SIZE_MB}MB.` }, { status: 400 });
     }
 
-    // Konversi File → base64 data URI untuk Cloudinary
-    const bytes  = await file.arrayBuffer();
-    const base64 = Buffer.from(bytes).toString("base64");
+    // Konversi ke base64 untuk Cloudinary
+    const bytes   = await file.arrayBuffer();
+    const base64  = Buffer.from(bytes).toString("base64");
     const dataUri = `data:${file.type};base64,${base64}`;
 
-    // Nama file bersih sebagai public_id
     const safeName = file.name
       .replace(/\.[^.]+$/, "")
       .replace(/[^a-z0-9]/gi, "-")
       .toLowerCase()
       .slice(0, 60);
 
+    // Upload ke Cloudinary
     const result = await cloudinary.uploader.upload(dataUri, {
-      folder:           FOLDER,
-      public_id:        `${safeName}-${Date.now()}`,
-      overwrite:        false,
-      resource_type:    "image",
-      transformation:   [{ quality: "auto", fetch_format: "auto" }],
+      folder:        FOLDER,
+      public_id:     `${safeName}-${Date.now()}`,
+      overwrite:     false,
+      resource_type: "image",
+      transformation: [{ quality: "auto", fetch_format: "auto" }],
     });
+
+    // Simpan ke database
+    await query(
+      `INSERT INTO gallery (filename, url, public_id, size, width, height)
+       VALUES (?, ?, ?, ?, ?, ?)
+       ON DUPLICATE KEY UPDATE url = VALUES(url)`,
+      [
+        result.public_id.split("/").pop() ?? result.public_id,
+        result.secure_url,
+        result.public_id,
+        file.size,
+        result.width ?? null,
+        result.height ?? null,
+      ]
+    );
 
     return NextResponse.json({
       url:       result.secure_url,
@@ -51,7 +67,7 @@ export async function POST(req: NextRequest) {
       filename:  result.public_id.split("/").pop(),
     });
   } catch (err) {
-    console.error("Cloudinary upload error:", err);
+    console.error("Upload error:", err);
     return NextResponse.json({ message: "Upload gagal. Coba lagi." }, { status: 500 });
   }
 }
