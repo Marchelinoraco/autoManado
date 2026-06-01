@@ -1,9 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
-import { ArrowRight, Loader2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, Loader2, Pause, Play } from "lucide-react";
 import ScrollReveal from "./ScrollReveal";
 
 type GalleryImage = {
@@ -16,19 +15,39 @@ type GalleryImage = {
   createdAt: string;
 };
 
+const INTERVAL = 4000; // 4 detik per slide
+
 export default function ActivityGallery() {
   const [images, setImages] = useState<GalleryImage[]>([]);
   const [loading, setLoading] = useState(true);
+  const [active, setActive] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const [fading, setFading] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
     fetch("/api/gallery")
-      .then((res) => res.json())
-      .then((data) => {
-        setImages(data);
-        setLoading(false);
-      })
+      .then((r) => r.json())
+      .then((data) => { setImages(data); setLoading(false); })
       .catch(() => setLoading(false));
   }, []);
+
+  const goTo = useCallback((idx: number, total: number) => {
+    setFading(true);
+    setTimeout(() => {
+      setActive((idx + total) % total);
+      setFading(false);
+    }, 300);
+  }, []);
+
+  // Auto-play
+  useEffect(() => {
+    if (images.length < 2 || paused) return;
+    timerRef.current = setInterval(() => {
+      goTo(active + 1, images.length);
+    }, INTERVAL);
+    return () => { if (timerRef.current) clearInterval(timerRef.current); };
+  }, [active, images.length, paused, goTo]);
 
   if (loading) {
     return (
@@ -41,14 +60,14 @@ export default function ActivityGallery() {
       </section>
     );
   }
+  if (images.length === 0) return null;
 
-  if (images.length === 0) {
-    return null;
-  }
+  const featured = images[active];
 
   return (
     <section className="bg-white py-20 dark:bg-gray-900">
       <div className="mx-auto max-w-7xl px-4">
+
         {/* Header */}
         <ScrollReveal>
           <div className="text-center">
@@ -59,49 +78,137 @@ export default function ActivityGallery() {
               Momen AutoManado
             </h2>
             <p className="mt-4 text-lg text-gray-500 dark:text-gray-400">
-              Lihat aktivitas dan pengalaman pelanggan kami di Manado
+              Aktivitas dan pengalaman pelanggan kami di Manado
             </p>
           </div>
         </ScrollReveal>
 
-        {/* Gallery Grid */}
-        <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {images.map((img, i) => (
-            <ScrollReveal key={img.id} delay={i * 80}>
-              <div className="group relative overflow-hidden rounded-2xl bg-gray-100 shadow-sm transition hover:shadow-md dark:bg-gray-800">
-                {/* Image Container */}
-                <div className="relative aspect-[4/3]">
-                  <Image
-                    src={img.url}
-                    alt={img.filename}
-                    fill
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                    className="object-cover transition duration-300 group-hover:scale-105"
-                  />
+        {/* Main slideshow */}
+        <div className="mt-12 grid gap-4 lg:grid-cols-3">
 
-                  {/* Overlay on hover */}
-                  <div className="absolute inset-0 flex items-end bg-gradient-to-t from-black/60 via-black/0 to-transparent opacity-0 transition group-hover:opacity-100">
-                    <div className="w-full p-4">
-                      <p className="text-sm font-medium text-white">{img.filename}</p>
-                    </div>
-                  </div>
-                </div>
+          {/* Featured image — kiri (2/3 lebar) */}
+          <div className="relative lg:col-span-2">
+            <div
+              className="group relative aspect-[4/3] overflow-hidden rounded-2xl bg-gray-100 shadow-lg dark:bg-gray-800"
+              onMouseEnter={() => setPaused(true)}
+              onMouseLeave={() => setPaused(false)}
+            >
+              {/* Gambar dengan fade transition */}
+              <Image
+                key={featured.id}
+                src={featured.url}
+                alt={featured.filename}
+                fill
+                sizes="(max-width: 1024px) 100vw, 66vw"
+                priority
+                className={`object-cover transition-opacity duration-300 ${fading ? "opacity-0" : "opacity-100"}`}
+              />
+
+              {/* Overlay gradient bawah */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+
+              {/* Nomor + total */}
+              <div className="absolute left-4 top-4 rounded-full bg-black/40 px-3 py-1 text-xs font-semibold text-white backdrop-blur-sm">
+                {active + 1} / {images.length}
               </div>
-            </ScrollReveal>
-          ))}
-        </div>
 
-        {/* CTA Button */}
-        <ScrollReveal delay={images.length * 80} className="mt-12 flex justify-center">
-          <Link
-            href="/admin/login"
-            className="group inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-6 py-3 text-sm font-semibold text-gray-700 transition hover:border-teal hover:bg-teal/5 hover:text-teal dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:border-teal dark:hover:text-teal"
-          >
-            Lihat Lebih Banyak
-            <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
-          </Link>
-        </ScrollReveal>
+              {/* Play/Pause */}
+              <button
+                onClick={() => setPaused((p) => !p)}
+                className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm transition hover:bg-black/60"
+              >
+                {paused
+                  ? <Play className="h-3.5 w-3.5 translate-x-0.5" />
+                  : <Pause className="h-3.5 w-3.5" />}
+              </button>
+
+              {/* Prev / Next buttons */}
+              <button
+                onClick={() => { setPaused(true); goTo(active - 1, images.length); }}
+                className="absolute left-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm transition hover:bg-black/70"
+              >
+                <ChevronLeft className="h-5 w-5" />
+              </button>
+              <button
+                onClick={() => { setPaused(true); goTo(active + 1, images.length); }}
+                className="absolute right-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm transition hover:bg-black/70"
+              >
+                <ChevronRight className="h-5 w-5" />
+              </button>
+
+              {/* Progress bar */}
+              {!paused && (
+                <div className="absolute bottom-0 left-0 h-1 w-full bg-white/20">
+                  <div
+                    key={`${active}-${paused}`}
+                    className="h-full bg-teal"
+                    style={{
+                      animation: `progressBar ${INTERVAL}ms linear forwards`,
+                    }}
+                  />
+                </div>
+              )}
+            </div>
+
+            {/* Dot navigation */}
+            <div className="mt-4 flex justify-center gap-1.5">
+              {images.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => { setPaused(true); goTo(i, images.length); }}
+                  className={`rounded-full transition-all duration-300 ${
+                    i === active
+                      ? "w-6 h-2 bg-teal"
+                      : "w-2 h-2 bg-gray-300 hover:bg-teal/50 dark:bg-gray-600"
+                  }`}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Thumbnail strip — kanan (1/3 lebar) */}
+          <div className="hidden flex-col gap-3 lg:flex">
+            {images.slice(0, 4).map((img, i) => (
+              <button
+                key={img.id}
+                onClick={() => { setPaused(true); goTo(i, images.length); }}
+                className={`group relative h-24 w-full overflow-hidden rounded-xl transition ${
+                  i === active
+                    ? "ring-2 ring-teal ring-offset-2 dark:ring-offset-gray-900"
+                    : "opacity-70 hover:opacity-100"
+                }`}
+              >
+                <Image
+                  src={img.url}
+                  alt={img.filename}
+                  fill
+                  sizes="300px"
+                  className="object-cover transition duration-300 group-hover:scale-105"
+                />
+                {i === active && (
+                  <div className="absolute inset-0 bg-teal/20" />
+                )}
+              </button>
+            ))}
+
+            {images.length > 4 && (
+              <div className="flex h-16 items-center justify-center rounded-xl border-2 border-dashed border-gray-200 dark:border-gray-700">
+                <span className="text-sm font-semibold text-gray-400">
+                  +{images.length - 4} foto lainnya
+                </span>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
+
+      {/* CSS keyframe untuk progress bar */}
+      <style jsx>{`
+        @keyframes progressBar {
+          from { width: 0% }
+          to   { width: 100% }
+        }
+      `}</style>
     </section>
   );
 }

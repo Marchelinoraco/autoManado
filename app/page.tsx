@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, MessageCircle, MapPin, Star } from "lucide-react";
 import Logo from "@/components/Logo";
+import HeroCarousel from "@/components/HeroCarousel";
 import { getCars, getTestimonials } from "@/lib/cars";
 import CarCard from "@/components/CarCard";
 import Counter from "@/components/Counter";
@@ -126,14 +127,17 @@ export default async function Home() {
             {/* ── Kanan: Gambar + floating card ── */}
             <ScrollReveal delay={120} className="hidden lg:block">
               <div className="relative">
-                {/* Gambar utama */}
-                <div className="aspect-[4/3] overflow-hidden rounded-3xl shadow-xl">
-                  <img
-                    src="https://images.unsplash.com/photo-1494976388531-d1058494cdd8?auto=format&fit=crop&w=900&q=80"
-                    alt="Mobil rental Manado"
-                    className="h-full w-full object-cover"
-                  />
-                </div>
+                {/* Carousel armada dari database */}
+                <HeroCarousel
+                  slides={allCars
+                    .filter((c) => c.images.length > 0)
+                    .slice(0, 10)
+                    .map((c) => ({
+                      url: c.images[0],
+                      name: c.name,
+                      type: c.type,
+                    }))}
+                />
 
                 {/* Floating card kiri bawah */}
                 <div className="absolute -bottom-5 -left-5 flex items-center gap-3 rounded-2xl border border-gray-200 bg-white p-4 shadow-lg dark:border-gray-700 dark:bg-gray-800">
