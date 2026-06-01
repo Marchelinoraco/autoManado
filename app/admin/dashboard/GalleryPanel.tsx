@@ -14,7 +14,7 @@ type GalleryImage = {
   height?: number;
 };
 
-export default function GalleryPanel() {
+export default function ActivityGalleryPanel() {
   const [images, setImages] = useState<GalleryImage[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
@@ -86,10 +86,15 @@ export default function GalleryPanel() {
   return (
     <div className="mt-8">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-          Galeri Gambar
-          <span className="ml-2 text-sm font-normal text-gray-500">({images.length} file)</span>
-        </h2>
+        <div>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+            Galeri Aktivitas AutoManado
+            <span className="ml-2 text-sm font-normal text-gray-500">({images.length} foto)</span>
+          </h2>
+          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+            Foto aktivitas yang ditampilkan di halaman utama. Pengunjung website bisa melihat galeri ini.
+          </p>
+        </div>
         <button
           onClick={() => fileRef.current?.click()}
           disabled={uploading}

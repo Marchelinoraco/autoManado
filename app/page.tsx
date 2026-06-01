@@ -5,6 +5,7 @@ import { getCars, getTestimonials } from "@/lib/cars";
 import CarCard from "@/components/CarCard";
 import Counter from "@/components/Counter";
 import TestimonialGallery from "@/components/TestimonialGallery";
+import ActivityGallery from "@/components/ActivityGallery";
 import ScrollReveal from "@/components/ScrollReveal";
 import TrustStrip from "@/components/TrustStrip";
 import Faq from "@/components/Faq";
@@ -227,6 +228,9 @@ export default async function Home() {
           </div>
         </div>
       </section>
+
+      {/* ═══ GALERI AKTIVITAS ═══ */}
+      <ActivityGallery />
 
       {/* ═══ TESTIMONI ═══ */}
       <section className="bg-gray-50 py-4 dark:bg-gray-800/50">

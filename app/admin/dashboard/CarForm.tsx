@@ -228,12 +228,13 @@ export default function CarForm({ initial, defaultCategory = "rental", onSaved, 
         />
       </label>
 
-      {/* ── Kolom foto ── */}
+      {/* ── Kolom foto (hanya untuk kategori JUAL) ── */}
+      {(form.category === "jual" || form.category === "keduanya") && (
       <div className="space-y-2">
         <div className="flex items-center justify-between">
           <span className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
             <Images className="h-4 w-4" />
-            Foto Mobil
+            Foto Mobil (untuk kategori Jual)
           </span>
           <div className="flex items-center gap-2">
             <span className={`text-xs font-semibold ${imageList.length >= 5 ? "text-green-600" : "text-amber-500"}`}>
@@ -311,6 +312,13 @@ export default function CarForm({ initial, defaultCategory = "rental", onSaved, 
           </p>
         )}
       </div>
+      )}
+
+      {form.category === "rental" && (
+        <p className="rounded-lg border border-blue-200 bg-blue-50 px-4 py-2 text-sm text-blue-600 dark:border-blue-900 dark:bg-blue-900/20 dark:text-blue-400">
+          ℹ️ Upload foto hanya tersedia untuk kategori <strong>Jual</strong> atau <strong>Keduanya</strong>.
+        </p>
+      )}
 
       {error && (
         <p className="rounded-lg border border-red-200 bg-red-50 px-4 py-2 text-sm text-red-600 dark:border-red-900 dark:bg-red-900/20 dark:text-red-400">

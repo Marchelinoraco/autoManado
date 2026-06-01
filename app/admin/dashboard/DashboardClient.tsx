@@ -11,7 +11,7 @@ import { Car, Testimonial } from "@/lib/types";
 import { formatRupiah } from "@/lib/whatsapp";
 import CarForm from "./CarForm";
 import TestimonialPanel from "./TestimonialPanel";
-import GalleryPanel from "./GalleryPanel";
+import ActivityGalleryPanel from "./GalleryPanel";
 
 type Stats = { total: number; tersedia: number; disewa: number; terjual: number };
 type MainTab = "sewa" | "jual" | "galeri" | "testimoni";
@@ -244,8 +244,8 @@ export default function DashboardClient({
         </>
       )}
 
-      {/* ─── TAB GALERI ─── */}
-      {tab === "galeri" && <GalleryPanel />}
+      {/* ─── TAB GALERI AKTIVITAS ─── */}
+      {tab === "galeri" && <ActivityGalleryPanel />}
 
       {/* ─── TAB TESTIMONI ─── */}
       {tab === "testimoni" && <TestimonialPanel initialList={initialTestimonials} />}
