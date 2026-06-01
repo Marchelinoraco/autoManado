@@ -1,0 +1,52 @@
+import type { Metadata } from "next";
+import { getCars } from "@/lib/cars";
+import LandingTemplate from "@/components/LandingTemplate";
+
+export const revalidate = 60;
+
+export const metadata: Metadata = {
+  title: "Sewa Mobil Lepas Kunci Manado — Tanpa Sopir | AutoManado",
+  description:
+    "Sewa mobil lepas kunci di Manado tanpa sopir, bebas berkendara sendiri. Syarat mudah, harga jelas, armada terawat. Booking cepat via WhatsApp bersama AutoManado.",
+  alternates: { canonical: "/sewa-mobil-lepas-kunci-manado" },
+};
+
+export default async function Page() {
+  const cars = await getCars().catch(() => []);
+  const rental = cars.filter(
+    (c) => (c.category === "rental" || c.category === "keduanya") && c.status !== "terjual"
+  );
+
+  return (
+    <LandingTemplate
+      eyebrow="Sewa Lepas Kunci di Manado"
+      title="Sewa Mobil Lepas Kunci Manado"
+      intro="Ingin berkendara sendiri menjelajahi Manado, Tomohon, hingga Likupang? AutoManado menyediakan sewa mobil lepas kunci (tanpa sopir) dengan syarat yang mudah dan harga yang transparan. Pilih dari city car irit hingga MPV keluarga, semua unit terawat dan siap pakai."
+      highlights={[
+        "Bebas berkendara sendiri",
+        "Syarat mudah & cepat",
+        "Unit terawat & bersih",
+        "Harga harian/mingguan/bulanan",
+      ]}
+      carsHeading="Mobil Tersedia untuk Lepas Kunci"
+      cars={rental}
+      waMessage="Halo AutoManado, saya ingin sewa mobil lepas kunci (tanpa sopir) di Manado. Apa saja syaratnya?"
+      path="/sewa-mobil-lepas-kunci-manado"
+      breadcrumbName="Sewa Mobil Lepas Kunci Manado"
+      sections={[
+        {
+          heading: "Apa itu sewa lepas kunci?",
+          body: "Sewa lepas kunci berarti Anda mengemudikan mobil sendiri tanpa sopir, sehingga lebih fleksibel dan privat. AutoManado menawarkan opsi ini untuk Anda yang sudah terbiasa menyetir dan ingin mengatur perjalanan sesuai keinginan, baik untuk urusan kerja maupun liburan keliling Sulawesi Utara.",
+        },
+        {
+          heading: "Syarat sewa lepas kunci",
+          body: "Umumnya cukup KTP, SIM A yang masih berlaku, dan jaminan sesuai kesepakatan dengan mitra rental. Persyaratan detail dan ketentuan deposit akan dikonfirmasi langsung via WhatsApp agar jelas dan transparan sebelum Anda booking.",
+        },
+        {
+          heading: "Tips sewa mobil di Manado",
+          body: "Pesan lebih awal terutama saat musim liburan dan akhir pekan, karena unit populer seperti Avanza dan Innova cepat habis. Pastikan rute perjalanan Anda — medan Tomohon dan Modoinding berbukit, jadi pilih mobil dengan tenaga yang sesuai. Tim kami siap membantu merekomendasikan unit terbaik.",
+        },
+      ]}
+    />
+  );
+}

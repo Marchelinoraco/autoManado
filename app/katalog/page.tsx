@@ -8,6 +8,7 @@ export const metadata: Metadata = {
   title: "Katalog Mobil — Rental & Jual Mobil Manado",
   description:
     "Lihat daftar lengkap mobil rental dan jual di Manado: MPV, SUV, Sedan, City Car. Filter & cari mobil sesuai kebutuhan Anda.",
+  alternates: { canonical: "/katalog" },
 };
 
 export default async function KatalogPage() {

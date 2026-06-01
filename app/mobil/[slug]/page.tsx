@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 import { getCarBySlug, getAllSlugs } from "@/lib/cars";
 import { formatRupiah } from "@/lib/whatsapp";
+import { SITE_URL } from "@/lib/site";
 import RentCalculator from "@/components/RentCalculator";
 import BuyButton from "@/components/BuyButton";
 import TanyaButton from "@/components/TanyaButton";
@@ -27,9 +28,11 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   return {
     title: `${car.name} ${car.year} — ${car.category === "jual" ? "Jual" : "Sewa"} Mobil Manado`,
     description: `${car.name} ${car.year}, ${car.type}, ${car.transmission}, ${car.fuel}${car.kondisi ? `, kondisi ${car.kondisi}` : ""}. ${car.description ?? ""}`.slice(0, 160),
+    alternates: { canonical: `/mobil/${car.slug}` },
     openGraph: {
       title: `${car.name} ${car.year} | AutoManado`,
       description: car.description ?? "",
+      type: "website",
       images: car.images.length ? [{ url: car.images[0] }] : [],
     },
   };
@@ -52,30 +55,44 @@ export default async function CarDetail({ params }: { params: { slug: string } }
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Car",
-    name: car.name,
+    name: `${car.name} ${car.year}`,
     model: car.name,
+    url: `${SITE_URL}/mobil/${car.slug}`,
     vehicleModelDate: String(car.year),
     fuelType: car.fuel,
     vehicleTransmission: car.transmission,
     seatingCapacity: car.seats,
+    vehicleConfiguration: car.type,
     image: car.images,
     description: car.description,
     offers: {
       "@type": "Offer",
       priceCurrency: "IDR",
       price: car.price_sell ?? car.price_rent ?? 0,
+      url: `${SITE_URL}/mobil/${car.slug}`,
       availability:
         car.status === "tersedia"
           ? "https://schema.org/InStock"
           : "https://schema.org/OutOfStock",
+      seller: { "@type": "AutoRental", name: "AutoManado", "@id": `${SITE_URL}/#business` },
     },
+  };
+
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Beranda", item: SITE_URL },
+      { "@type": "ListItem", position: 2, name: "Katalog", item: `${SITE_URL}/katalog` },
+      { "@type": "ListItem", position: 3, name: car.name, item: `${SITE_URL}/mobil/${car.slug}` },
+    ],
   };
 
   return (
     <section className="mx-auto max-w-7xl px-4 py-12">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify([jsonLd, breadcrumbJsonLd]) }}
       />
 
       <div className="grid gap-10 lg:grid-cols-3">

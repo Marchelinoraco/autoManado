@@ -33,10 +33,10 @@ export default function Footer() {
         <div>
           <h4 className="mb-4 font-semibold text-gray-900 dark:text-white">Layanan</h4>
           <ul className="space-y-2.5 text-sm text-gray-500 dark:text-gray-400">
-            <li>Rental Mobil Harian</li>
-            <li>Sewa + Sopir</li>
-            <li>Jual Beli Mobil</li>
-            <li>Antar-Jemput Bandara</li>
+            <li><Link href="/rental-mobil-manado" className="transition hover:text-gray-900 dark:hover:text-white">Rental Mobil Manado</Link></li>
+            <li><Link href="/sewa-mobil-lepas-kunci-manado" className="transition hover:text-gray-900 dark:hover:text-white">Sewa Mobil Lepas Kunci</Link></li>
+            <li><Link href="/rental-mobil-dengan-sopir-manado" className="transition hover:text-gray-900 dark:hover:text-white">Rental Mobil + Sopir</Link></li>
+            <li><Link href="/jual-mobil-bekas-manado" className="transition hover:text-gray-900 dark:hover:text-white">Jual Mobil Bekas Manado</Link></li>
           </ul>
         </div>
 

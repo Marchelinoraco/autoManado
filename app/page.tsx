@@ -12,6 +12,7 @@ import TrustStrip from "@/components/TrustStrip";
 import Faq from "@/components/Faq";
 import { faqs } from "@/lib/faqs";
 import { waLink } from "@/lib/whatsapp";
+import { SITE_URL } from "@/lib/site";
 
 export const revalidate = 60;
 
@@ -35,12 +36,41 @@ export default async function Home() {
     })),
   };
 
+  // AggregateRating dari testimoni — agar bintang muncul di hasil Google
+  const ratingCount = testimonials.length;
+  const avgRating =
+    ratingCount > 0
+      ? testimonials.reduce((sum, t) => sum + (t.rating || 0), 0) / ratingCount
+      : 0;
+  const ratingJsonLd =
+    ratingCount > 0
+      ? {
+          "@context": "https://schema.org",
+          "@type": "AutoRental",
+          "@id": `${SITE_URL}/#business`,
+          name: "AutoManado",
+          aggregateRating: {
+            "@type": "AggregateRating",
+            ratingValue: avgRating.toFixed(1),
+            reviewCount: ratingCount,
+            bestRating: 5,
+            worstRating: 1,
+          },
+        }
+      : null;
+
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
+      {ratingJsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(ratingJsonLd) }}
+        />
+      )}
 
       {/* ═══ HERO ═══ */}
       <section className="relative overflow-hidden bg-white dark:bg-gray-900">

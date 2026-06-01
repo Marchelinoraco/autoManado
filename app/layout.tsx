@@ -7,21 +7,26 @@ import FloatingWhatsApp from "@/components/FloatingWhatsApp";
 import { CompareProvider } from "@/components/CompareProvider";
 import CompareBar from "@/components/CompareBar";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { SITE, SITE_URL, businessJsonLd } from "@/lib/site";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://automanado.vercel.app"),
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "Rental & Jual Mobil Manado Terpercaya | AutoManado",
     template: "%s | AutoManado",
   },
-  description:
-    "AutoManado — marketplace rental dan jual-beli mobil terbaik di Kota Manado, Sulawesi Utara. Sewa mobil harian, mingguan, bulanan, dan beli mobil berkualitas. Pesan mudah via WhatsApp.",
+  description: SITE.description,
+  alternates: { canonical: "/" },
   keywords: [
     "rental mobil Manado",
     "sewa mobil Manado",
+    "rental mobil Manado murah",
+    "sewa mobil lepas kunci Manado",
+    "rental mobil dengan sopir Manado",
     "jual mobil Manado",
+    "jual beli mobil bekas Manado",
     "rental mobil Sulawesi Utara",
     "AutoManado",
   ],
@@ -29,8 +34,15 @@ export const metadata: Metadata = {
     title: "Rental & Jual Mobil Manado Terpercaya | AutoManado",
     description:
       "Sewa & beli mobil terbaik di Kota Manado. Pesan mudah via WhatsApp.",
+    url: SITE_URL,
+    siteName: SITE.name,
     type: "website",
     locale: "id_ID",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-image-preview": "large" },
   },
 };
 
@@ -50,6 +62,10 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen font-sans antialiased bg-white dark:bg-gray-900">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(businessJsonLd) }}
+        />
         <ThemeProvider>
           <CompareProvider>
             <Navbar />

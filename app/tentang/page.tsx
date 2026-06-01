@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   title: "Tentang AutoManado — Marketplace Mobil Manado",
   description:
     "AutoManado adalah marketplace rental dan jual-beli mobil yang menghubungkan pelanggan dengan pengusaha rental & dealer terpercaya di Kota Manado, Sulawesi Utara.",
+  alternates: { canonical: "/tentang" },
 };
 
 export default function TentangPage() {
